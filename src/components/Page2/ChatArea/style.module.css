@@ -1,0 +1,33 @@
+.header{
+    /* flex-grow: 1; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px;
+    max-height: 120px;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.searchButton{
+    border-radius: 50% !important;
+    min-width: 0 !important;
+    padding: 8px !important;
+    background: #FFF !important;
+}
+.buttom{
+    display: flex;
+    align-self: stretch;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.messageAttachButtons{
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}
+.messageAttachButton{
+    border-radius: 100% !important;
+    padding: .3rem !important;
+    min-width: 0 !important;
+}
