@@ -25,21 +25,6 @@ export const AllClientsPaginationContextProvider = ({ children }) => {
         setIsLoading(false);
 
         return response.data.data
-        // if (clients.length === 0) {
-        //   setClients(newClients);
-        //   setFetchedClients(newClients);
-        // } else {
-        //   setClients((prevClients) => [...prevClients, ...newClients]);
-        //   setFetchedClients((prevClients) => [...prevClients, ...newClients]);
-        // }
-        // const nextUrl = response.data.pagination.next_page_url;
-        // console.log('pagination: ', nextUrl);
-        // setNext_page_url(nextUrl);
-        // const addPage = nextUrl !== null? current_page + 1: current_page;
-        // setCurrent_page(addPage);
-        // if (newClients.length < 50) {
-        //   setHasMore(false);
-        // }
       } catch (error) {
         console.error('Error fetching clients', error);
         return [];
@@ -56,9 +41,11 @@ export const AllClientsPaginationContextProvider = ({ children }) => {
       setHasMore(false);
     } else if (clients.length === 0) {
       setClients(newData);
+      setFetchedClients(newData)
       setCurrent_page(prevPage => prevPage + 1);
     } else {
       setClients(prevResults => [...prevResults, ...newData]);
+      // setFetchedClients(prevResults => [...prevResults, ...newData]);
       setCurrent_page(prevPage => prevPage + 1);
     }
   };
