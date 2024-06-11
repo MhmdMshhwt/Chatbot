@@ -77,11 +77,11 @@ const SidebarHeader = () => {
         handleClientsFilter(searchValue)
     }
 
-    React.useEffect(() => {
-        if (searchValue === '') {
-            setClients(fetchedClients);
-        }
-    },[searchValue])
+    // React.useEffect(() => {
+    //     if (searchValue === '') {
+    //         setClients(fetchedClients);
+    //     }
+    // },[searchValue])
 
     return (
         <Box
