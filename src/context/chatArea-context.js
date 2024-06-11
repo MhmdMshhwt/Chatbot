@@ -112,19 +112,19 @@ export const ChatAreaContextProvider = ({children}) => {
     };
 
     const handleClientChange = async (where, clientId) => {
-        let targetClient;
-        if (where === "all") {
-            targetClient = clients.filter(client => client.id === clientId);
+        // let targetClient;
+        // if (where === "all") {
+        //     targetClient = clients.filter(client => client.id === clientId);
             
-        } else if (where === "unRead") {
-            targetClient = unReadClients.filter(client => client.id === clientId);
-        }else if (where === "archived") {
-            targetClient = archivedClients.filter(client => client.id === clientId);
-        }
-        setClientChat([]);
-        setClient(targetClient[0]);
+        // } else if (where === "unRead") {
+        //     targetClient = unReadClients.filter(client => client.id === clientId);
+        // }else if (where === "archived") {
+        //     targetClient = archivedClients.filter(client => client.id === clientId);
+        // }
+        // setClientChat([]);
+        // setClient(targetClient[0]);
 
-        console.log('test client change ',targetClient[0])
+        // console.log('test client change ',targetClient[0])
     }
 
     useEffect(() => {
@@ -137,9 +137,6 @@ export const ChatAreaContextProvider = ({children}) => {
       }, []);
 
     const contextValue = {
-        clients,
-        unReadClients,
-        setClients,
         clientChat,
         setClientChat,
         // fetchClientChat,
@@ -161,9 +158,7 @@ export const ChatAreaContextProvider = ({children}) => {
         setIsSidebarOpen,
         handleClientsFilter,
         handleClientChange,
-        archivedClients,
         notificationCount,
-        setArchivedClients,
         isLoading,
     }
 

@@ -8,6 +8,7 @@ import ChatAreaContext from '../../../context/chatArea-context';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { Search } from '@mui/icons-material';
+import { AllClientsPaginationContext } from '../../../context/AllClientsPagination-context';
 
 const SearchField = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -59,9 +60,9 @@ function a11yProps(index) {
 
 const SidebarHeader = () => {
     const { theme } = useTheme();
-    const { value, setValue, handleClientsFilter, setClients, fetchedClients } = React.useContext(ChatAreaContext);
+    const { value, setValue, handleClientsFilter,} = React.useContext(ChatAreaContext);
     const [searchValue, setSearchValue] = React.useState('');
-
+    const { setClients, fetchedClients } = React.useContext(AllClientsPaginationContext);
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };

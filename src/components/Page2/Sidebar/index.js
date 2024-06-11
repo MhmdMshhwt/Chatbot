@@ -82,7 +82,7 @@ const Sidebar = () => {
             ref={clientsEndRef} 
             // onScroll={handleScroll}  
             className="overflow-auto flex-grow">
-              {clients?.map((client) => (
+              { clients && clients?.map((client) => (
                 <ListItem button key={client.id} onClick={() => { setClient(client); setIsSidebarOpen(false) }} className='items-start'>
                   <ListItemAvatar>
                     <Avatar>{client.name[0]}</Avatar>
