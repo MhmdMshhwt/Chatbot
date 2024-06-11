@@ -3,13 +3,28 @@ import ChatAreaContext from "./chatArea-context";
 import { url_live } from "../constants";
 import axios from "axios";
 import moment from "moment/moment";
+import { AllClientsPaginationContext } from "./AllClientsPagination-context";
 
 
 const UpdateClientContext = createContext();
 
 export const UpdateClientContextProvider = ({children}) => {
-    const { client, statusOptions, classificationOptions, bootOptions, employees } = useContext(ChatAreaContext); 
-    
+    const {fetchClientChat, setArchivedClients, archivedClients, client, setClientChat, setClient, statusOptions, classificationOptions, bootOptions, employees } = useContext(ChatAreaContext); 
+    const { setClients, clients } = useContext(AllClientsPaginationContext);
+
+    const updateClients= async()=> {
+        setClients(clients.map(myClient => {
+          if (myClient.id === client.id) {
+            // Create a *new* object with changes
+              console.log('test client update: ', client);
+              return client;
+              
+          } else {
+            // No changes
+            return myClient;
+          }
+        }));
+    }
 
     const updateStatus = async(status) => {
         const matchedStatus = statusOptions.filter((item)=> item.name === status)
@@ -25,7 +40,16 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
-
+        setClients(clients.map(myClient => {
+            if (myClient.id === client.id) {
+              // Create a *new* object with changes
+                return { ...client, status: status };
+                
+            } else {
+              // No changes
+              return myClient;
+            }
+        }));
     }
 
     const AddEmployee = async(employee) => {
@@ -42,7 +66,16 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
-
+        setClients(clients.map(myClient => {
+            if (myClient.id === client.id) {
+              // Create a *new* object with changes
+                return { ...client, employee: employee };
+                
+            } else {
+              // No changes
+              return myClient;
+            }
+        }));
     }
     
     const AddComment = async (comment) => {
@@ -76,7 +109,16 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
-
+        setClients(clients.map(myClient => {
+            if (myClient.id === client.id) {
+              // Create a *new* object with changes
+                return { ...client, classification: category };
+                
+            } else {
+              // No changes
+              return myClient;
+            }
+        }));
     }
     const addBoot = async (boot) => {
         const matchedBoot = bootOptions.filter((item)=> item.name === boot)
@@ -108,9 +150,30 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
+        setClients(clients.map(myClient => {
+            if (myClient.id === client.id) {
+              // Create a *new* object with changes
+                return { ...client, 'Follow history': followHistory };
+                
+            } else {
+              // No changes
+              return myClient;
+            }
+        }));
     }
     
     const updateClientName = async (name) => {
+        setClients(clients.map(myClient => {
+            if (myClient.id === client.id) {
+              // Create a *new* object with changes
+                return { ...client, name: name };
+                
+            } else {
+              // No changes
+              return myClient;
+            }
+        }));
+        setClient({...client, name: name})
         const formData = new FormData();
         formData.append('uuid', client.id);
         formData.append('type', 'name_client');
@@ -124,12 +187,30 @@ export const UpdateClientContextProvider = ({children}) => {
         });
         console.log(response.data);
     }
+    const sendMessage = async (message) => {
+        const formData = new FormData();
+        formData.append('uuid', client.id);
+        formData.append('type', 'text');
+        formData.append('text', message);
+        
+        const endpoint = `${url_live}/api/whatsapp/sendMessages`;
+        const response = await axios.post(endpoint, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        console.log(response.data);
+    }
 
     const getCurrentDate = () => {
         return moment().format('DD/MM/YYYY');
     };
 
     const handleDeleteClient = async () => {
+        setClients(clients.filter((cl) => (cl.id !== client.id)));
+        setArchivedClients(prevClients => [...prevClients, client]);
+        setClient({});
+        setClientChat([]);
         const date = getCurrentDate();
         const formData = new FormData();
         formData.append('uuid', client.id);
@@ -142,7 +223,26 @@ export const UpdateClientContextProvider = ({children}) => {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log(response.data);
+        console.log(response.data);        
+    }
+    
+    const handleUnDeleteClient = async () => {
+        setArchivedClients(archivedClients.filter((cl) => (cl.id !== client.id)));
+        // setClient({});
+        fetchClientChat(client.id);
+        setClients(prevClients => [...prevClients, client]);
+        const date = getCurrentDate();
+        const formData = new FormData();
+        formData.append('uuid', client.id);
+        formData.append('type', 'undeleted');
+        
+        const endpoint = `${url_live}/api/whatsapp/undeleted`;
+        const response = await axios.post(endpoint, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        console.log(response.data);        
     }
 
     const contextValue = {
@@ -154,6 +254,9 @@ export const UpdateClientContextProvider = ({children}) => {
         AddEmployee,
         updateClientName,
         handleDeleteClient,
+        updateClients,
+        sendMessage,
+        handleUnDeleteClient,
     }
 
     return (

@@ -1,12 +1,14 @@
-import { createContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { url_live } from "../constants";
 import axios from "axios";
+import { AllClientsPaginationContext } from "./AllClientsPagination-context";
+import { UnReadClientsContext } from "./unReadClients-context";
+import { ArchivedClientsContext } from "./archivedClients-context";
 
 
 const ChatAreaContext = createContext();
 
 export const ChatAreaContextProvider = ({children}) => {
-    const [clients, setClients] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [displayedEmployees, setDisplayedEmployees] = useState([]);
     const [client, setClient] = useState({}); 
@@ -18,7 +20,33 @@ export const ChatAreaContextProvider = ({children}) => {
     const [displayedClassificationOptions, setDisplayedClassificationOptions] = useState([]);
     const [clientChat, setClientChat] = useState([]);
     const [error, setError] = useState(null);
-    
+    const [value, setValue] = useState(0);
+    const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [notificationCount, setNotificationCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    const { clients, setClients } = useContext(AllClientsPaginationContext);
+    const { unReadClients, setUnReadClients } = useContext(UnReadClientsContext);
+    const { archivedClients, setArchivedClients } = useContext(ArchivedClientsContext);
+
+    const handleClientsFilter = (value) => {
+        if (value !== "") {
+            setIsLoading(true)
+            // console.log('test value')
+            axios.get(`${url_live}/api/whatsapp/filterClient?type=search&search=${value}`)
+            .then(response => {
+                // const distinctStatusOptions = getDistinctOptions(response.data.data);
+                setClients(response.data.data);
+                // setDisplayedEmployees(response.data.data.map(item => item.name));
+                console.log('test filter: ',response.data.data);
+            })
+            .catch(error => {
+                setError(error);
+            })
+            setIsLoading(false)
+        } 
+    }
+
     const fetchEmployees = () => {
         axios.get(`${url_live}/api/whatsapp/employees`)
             .then(response => {
@@ -82,39 +110,27 @@ export const ChatAreaContextProvider = ({children}) => {
         }
         return uniqueArray;
     };
-    
-    const fetchClientChat = (clientId) => {
-        axios.get(`${url_live}/api/whatsapp/chat/${client.id}`)
-        .then(response => {
-            setClientChat(response.data.data);
-            // setLoading(false);
-            console.log(response.data.data)
-        })
-        .catch(error => {
-            setError(error);
-            // setLoading(false);
-        });
-        const targetClient = clients.filter(client => client.id === clientId);
-        setClient(targetClient[0]);
-        console.log('test client change ',targetClient[0])
-    }
 
-    const fetchClients = () => {
-        axios.get(`${url_live}/api/whatsapp/clients`)
-        .then(response => {
-            setClients(response.data.data);
-            // setLoading(false);
-        })
-        .catch(error => {
-            setError(error);
-            // setLoading(false);
-        });
+    const handleClientChange = async (where, clientId) => {
+        let targetClient;
+        if (where === "all") {
+            targetClient = clients.filter(client => client.id === clientId);
+            
+        } else if (where === "unRead") {
+            targetClient = unReadClients.filter(client => client.id === clientId);
+        }else if (where === "archived") {
+            targetClient = archivedClients.filter(client => client.id === clientId);
+        }
+        setClientChat([]);
+        setClient(targetClient[0]);
+
+        console.log('test client change ',targetClient[0])
     }
 
     useEffect(() => {
         fetchStatus();
         fetchClassification();
-        fetchClients();
+        // fetchClients();
         fetchEmployees();
         fetchBoots();
         // console.log(clients);
@@ -122,10 +138,14 @@ export const ChatAreaContextProvider = ({children}) => {
 
     const contextValue = {
         clients,
+        unReadClients,
+        setClients,
         clientChat,
-        fetchClientChat,
+        setClientChat,
+        // fetchClientChat,
         statusOptions,
         client,
+        setClient,
         employees,
         displayedEmployees,
         displayedStatusOptions,
@@ -133,6 +153,18 @@ export const ChatAreaContextProvider = ({children}) => {
         displayedClassificationOptions,
         bootOptions,
         displayedBootOptions,
+        value,
+        setValue,
+        isDetailsPanelOpen,
+        setIsDetailsPanelOpen,
+        isSidebarOpen,
+        setIsSidebarOpen,
+        handleClientsFilter,
+        handleClientChange,
+        archivedClients,
+        notificationCount,
+        setArchivedClients,
+        isLoading,
     }
 
     return (

@@ -2,7 +2,7 @@ import { Badge, Box, Button, TextField, Typography } from "@mui/material"
 import styles from './style.module.css'; 
 import { useTheme } from "../../../context/theme-context";
 import Search from "@mui/icons-material/Search";
-import { ChevronLeft, Notifications } from "@mui/icons-material";
+import { ChevronLeft, Menu, Notifications } from "@mui/icons-material";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -13,7 +13,7 @@ import ChatAreaContext from "../../../context/chatArea-context";
 const ChatHeader = () => {
     const { theme } = useTheme();
     const [markAs, setMarkAs] = useState('');
-    const { client } = useContext(ChatAreaContext);
+    const { notificationCount, client, setIsDetailsPanelOpen, setIsSidebarOpen } = useContext(ChatAreaContext);
 
     const handleChange = (event) => {
         setMarkAs(event.target.value);
@@ -30,12 +30,14 @@ const ChatHeader = () => {
                     display: 'flex',
                     alignItems: "flex-start",
                     justifyContent:'flex-start',
-                    gap: '.75rem'
+                    gap: '.75rem',
+                    width: '100%',
+                    // position: 'relative'
                 }}
                 noValidate
                 autoComplete="off"
             >
-                <input type="text" id="simple-search" style={{outline: 'none'}} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search branch name..." required />
+                <input type="text" id="simple-search" style={{outline: 'none'}} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search branch name..." required />
                 <Box
                     sx={{
                         display: 'flex',
@@ -51,7 +53,7 @@ const ChatHeader = () => {
                     >
                         <Search fontSize="14px"/>
                     </Button>
-                    <Badge badgeContent={1} color="secondary">
+                    <Badge badgeContent={notificationCount} color="secondary">
                         <Button
                             className={styles.searchButton}
                             variant="contained"
@@ -70,9 +72,23 @@ const ChatHeader = () => {
                         <ChevronLeft fontSize="10px" />
                     </Button> */}
                 </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: "center",
+                        justifyContent:'flex-end',
+                        gap: '.5rem',
+                        alignSelf: 'stretch',
+                        flex: '1 0 0',
+                        // position: 'absolute',
+                        // right: '0',
+                    }}
+                >
+                    <Menu sx={{ color: "#FFF", cursor: 'pointer' }} onClick={()=> setIsSidebarOpen(true) } />
+                </Box>
             </Box>
             <Box className={`${styles.buttom} py-2`}>
-                <Typography variant="body1" sx={{color: '#FFF'}}>{client.name}</Typography>
+                <Typography variant="body1" sx={{color: '#FFF', cursor: 'pointer'}} onClick={()=>setIsDetailsPanelOpen(true)} >{client.name}</Typography>
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl sx={{ m: 1, minWidth: 120 }} size="small" style={{ borderColor: 'white', color: 'white' }}>
                         <InputLabel id="demo-select-small-label" style={{ color: 'white' }}>Mark as</InputLabel>

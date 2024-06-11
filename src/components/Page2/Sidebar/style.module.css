@@ -4,6 +4,7 @@
     flex-direction: column;
     justify-content: space-between;
     min-height: 120px;
-    align-items: flex-end;
+    align-items: center;
     justify-content: flex-end;
+    gap: 10px;
 }

@@ -1,30 +1,48 @@
 // src/components/ChatArea.js
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Box, Typography, Button, TextField, Paper } from '@mui/material';
 import ChatHeader from './header';
 import bgImage from '../../../assets/images/ChatDefaultImage.jpg';
 import MessageForm from './messageForm';
 import ChatAreaContext from '../../../context/chatArea-context';
-
-const messages = [
-  { text: 'Hola como estas', sender: 'Marcos Santos', timestamp: '5/15/24', type: 'inbound' },
-  { text: 'jhjj', sender: 'Bot', timestamp: '5/15/24', type: 'outbound' },
-  { text: 'hello', sender: 'Bot', timestamp: '5/15/24', type: 'outbound' },
-  { text: 'Hola como estas', sender: 'Marcos Santos', timestamp: '5/15/24', type: 'inbound' },
-  { text: 'jhjj', sender: 'Bot', timestamp: '5/15/24', type: 'outbound' },
-  { text: 'hello', sender: 'Bot', timestamp: '5/15/24', type: 'outbound' },
-  { text: 'Hola como estas', sender: 'Marcos Santos', timestamp: '5/15/24', type: 'inbound' },
-  { text: 'jhjj', sender: 'Bot', timestamp: '5/15/24', type: 'outbound' },
-  { text: 'hello', sender: 'Bot', timestamp: '5/15/24', type: 'outbound' },
-];
+import Loading from '../../loading';
+import { MessagesContext } from '../../../context/messages-context';
 
 const ChatArea = () => {
-  const { clientChat } = useContext(ChatAreaContext);
+  const { client } = useContext(ChatAreaContext);
+  const { setCurrent_page, hasMore, messages, setMessages, next_page_url, fetchMessages, isLoading } = useContext(MessagesContext);
+  const messagesEndRef = useRef(null);
   
+  useEffect(() => {
+    // Load initial messages
+    setMessages([])
+    setCurrent_page(1);
+    const len = Object.keys(client).length;
+    if (len !== 0) {
+      fetchMessages(client.id);
+    }
+  }, [client]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleScroll = () => {
+    if (messagesEndRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = messagesEndRef.current;
+      if (scrollTop === 0 && next_page_url !==null && hasMore && !isLoading ) {
+        // Fetch older messages
+        fetchMessages(client.id);
+      }
+    }
+  };
+
   return (
     <Box className="max-h-screen" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <ChatHeader />
-      <Box
+      <Box ref={messagesEndRef} onScroll={handleScroll}
         sx={{
           flexGrow: 1,
           p: 2,
@@ -34,7 +52,22 @@ const ChatArea = () => {
           overflowY: 'auto',
         }}
       >
-        {clientChat?.map((msg) => (
+        {isLoading && <div className="loader">Loading...</div>}
+        {messages?.length === 0 &&
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Loading />
+          </Box>
+        }
+
+        {messages?.map((msg) => (
           <div key={msg.id} className={`my-2 flex flex-col ${msg.type === "sender_messages" ? 'items-end' : 'items-start'}`}>
             <Paper sx={{bgcolor: msg.type === "sender_messages" ? 'rgb(219 234 254)' : 'rgb(243 244 246)'}} className={`px-4 py-2 rounded-lg max-w-xs w-fit`} elevation={1}>
               <Typography variant="body1">{msg.messages}</Typography>
