@@ -5,6 +5,7 @@ import { useTheme } from "../../../context/theme-context";
 import { useContext, useState } from "react";
 import SendIcon from '@mui/icons-material/Send';
 import UpdateClientContext from "../../../context/updateClient-context";
+import { MessagesContext } from "../../../context/messages-context";
 
 const NoFocusOutlineSelect = styled(Select)(({ theme }) => ({
     '&:focus': {
@@ -38,7 +39,7 @@ const MessageForm = () => {
     const [type, setType] = useState('Human..');
     const [selectedOption, setSelectedOption] = useState('');
     const [textAreaValue, setTextAreaValue] = useState('');
-    const { sendMessage } = useContext(UpdateClientContext);
+    const { sendMessage } = useContext(MessagesContext);
 
     const handleSelectChange = (event) => {
         setSelectedOption(event.target.value);
@@ -50,9 +51,7 @@ const MessageForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Handle form submission logic here
-        console.log('Selected Option:', selectedOption);
-        console.log('Text Area Value:', textAreaValue);
+        setTextAreaValue("");
         sendMessage(textAreaValue);
     };
     

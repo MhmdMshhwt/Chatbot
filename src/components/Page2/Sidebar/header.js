@@ -9,46 +9,7 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { Search } from '@mui/icons-material';
 import { AllClientsPaginationContext } from '../../../context/AllClientsPagination-context';
-
-const SearchField = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: '20ch',
-      },
-    },
-  }));
+import { ClientsFilterContext } from '../../../context/clientsFilter-context';
 
 
 function a11yProps(index) {
@@ -60,9 +21,9 @@ function a11yProps(index) {
 
 const SidebarHeader = () => {
     const { theme } = useTheme();
-    const { value, setValue, handleClientsFilter,} = React.useContext(ChatAreaContext);
-    const [searchValue, setSearchValue] = React.useState('');
-    const { setClients, fetchedClients } = React.useContext(AllClientsPaginationContext);
+    const { value, setValue } = React.useContext(ChatAreaContext);
+    const { searchValue, setSearchValue, handleSearch } = React.useContext(ClientsFilterContext);
+    
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };
@@ -71,17 +32,6 @@ const SidebarHeader = () => {
         setSearchValue(event.target.value);
         console.log(event.target.value);
     }
-
-    const handleSearch = (event) => {
-        event.preventDefault();
-        handleClientsFilter(searchValue)
-    }
-
-    // React.useEffect(() => {
-    //     if (searchValue === '') {
-    //         setClients(fetchedClients);
-    //     }
-    // },[searchValue])
 
     return (
         <Box

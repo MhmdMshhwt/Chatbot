@@ -6,43 +6,30 @@ import axios from "axios";
 export const ArchivedClientsContext = createContext();
 
 const ArchivedClientsContextProvider = ({ children }) => {   
-    const [archivedClients, setArchivedClients] = useState([]);
-    const [current_page, setCurrent_page] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [fetchedArchivedClients, setFetchedUnReadClients] = useState([]);
-    const [archIsLoading, setArchIsLoading] = useState(false);
-    const archivedClientsEndRef = useRef();
+  const [archivedClients, setArchivedClients] = useState([]);
+  const [current_page, setCurrent_page] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [fetchedArchivedClients, setFetchedUnReadClients] = useState([]);
+  const [archIsLoading, setArchIsLoading] = useState(false);
+  const archivedClientsEndRef = useRef();
 
   
-    const fetchAllArchivedClients = async (page) => {
-      try {
-        setArchIsLoading(true);
-        const response = await axios.get(
-          `${url_live}/api/whatsapp/chatArchived?page=${page}`
-        );
-        setArchIsLoading(false);
+  const fetchAllArchivedClients = async (page) => {
+    try {
+      setArchIsLoading(true);
+      const response = await axios.get(
+        `${url_live}/api/whatsapp/chatArchived?page=${page}`
+      );
+      setArchIsLoading(false);
 
-        return response.data.data
-        // if (clients.length === 0) {
-        //   setClients(newClients);
-        //   setFetchedClients(newClients);
-        // } else {
-        //   setClients((prevClients) => [...prevClients, ...newClients]);
-        //   setFetchedClients((prevClients) => [...prevClients, ...newClients]);
-        // }
-        // const nextUrl = response.data.pagination.next_page_url;
-        // console.log('pagination: ', nextUrl);
-        // setNext_page_url(nextUrl);
-        // const addPage = nextUrl !== null? current_page + 1: current_page;
-        // setCurrent_page(addPage);
-        // if (newClients.length < 50) {
-        //   setHasMore(false);
-        // }
-      } catch (error) {
-        console.error('Error fetching clients', error);
-        return [];
-      }
+      return response.data.data
+      
+    } catch (error) {
+      console.error('Error fetching clients', error);
+      setArchIsLoading(false);
+      return [];
     }
+  }
     
   const loadMoreResults = async () => {
     if (!hasMore) return;
@@ -94,6 +81,7 @@ const ArchivedClientsContextProvider = ({ children }) => {
         archivedClients,
         archivedClientsEndRef,
         archIsLoading,
+      setArchivedClients,
     };
 
     return (

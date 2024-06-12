@@ -23,29 +23,10 @@ export const ChatAreaContextProvider = ({children}) => {
     const [value, setValue] = useState(0);
     const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [notificationCount, setNotificationCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const { clients, setClients } = useContext(AllClientsPaginationContext);
     const { unReadClients, setUnReadClients } = useContext(UnReadClientsContext);
     const { archivedClients, setArchivedClients } = useContext(ArchivedClientsContext);
-
-    const handleClientsFilter = (value) => {
-        if (value !== "") {
-            setIsLoading(true)
-            // console.log('test value')
-            axios.get(`${url_live}/api/whatsapp/filterClient?type=search&search=${value}`)
-            .then(response => {
-                // const distinctStatusOptions = getDistinctOptions(response.data.data);
-                setClients(response.data.data);
-                // setDisplayedEmployees(response.data.data.map(item => item.name));
-                console.log('test filter: ',response.data.data);
-            })
-            .catch(error => {
-                setError(error);
-            })
-            setIsLoading(false)
-        } 
-    }
 
     const fetchEmployees = () => {
         axios.get(`${url_live}/api/whatsapp/employees`)
@@ -156,9 +137,7 @@ export const ChatAreaContextProvider = ({children}) => {
         setIsDetailsPanelOpen,
         isSidebarOpen,
         setIsSidebarOpen,
-        handleClientsFilter,
         handleClientChange,
-        notificationCount,
         isLoading,
     }
 

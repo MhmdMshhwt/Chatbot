@@ -4,13 +4,17 @@ import { url_live } from "../constants";
 import axios from "axios";
 import moment from "moment/moment";
 import { AllClientsPaginationContext } from "./AllClientsPagination-context";
+import { ArchivedClientsContext } from "./archivedClients-context";
+import { MessagesContext } from "./messages-context";
 
 
 const UpdateClientContext = createContext();
 
 export const UpdateClientContextProvider = ({children}) => {
-    const {fetchClientChat, setArchivedClients, archivedClients, client, setClientChat, setClient, statusOptions, classificationOptions, bootOptions, employees } = useContext(ChatAreaContext); 
+    const {fetchClientChat, client, setClientChat, setClient, statusOptions, classificationOptions, bootOptions, employees } = useContext(ChatAreaContext); 
     const { setClients, clients } = useContext(AllClientsPaginationContext);
+    const { setArchivedClients, archivedClients } = useContext(ArchivedClientsContext); 
+    const { setMessages } = useContext(MessagesContext);
 
     const updateClients= async()=> {
         setClients(clients.map(myClient => {
@@ -187,21 +191,7 @@ export const UpdateClientContextProvider = ({children}) => {
         });
         console.log(response.data);
     }
-    const sendMessage = async (message) => {
-        const formData = new FormData();
-        formData.append('uuid', client.id);
-        formData.append('type', 'text');
-        formData.append('text', message);
-        
-        const endpoint = `${url_live}/api/whatsapp/sendMessages`;
-        const response = await axios.post(endpoint, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-        console.log(response.data);
-    }
-
+    
     const getCurrentDate = () => {
         return moment().format('DD/MM/YYYY');
     };
@@ -210,7 +200,7 @@ export const UpdateClientContextProvider = ({children}) => {
         setClients(clients.filter((cl) => (cl.id !== client.id)));
         setArchivedClients(prevClients => [...prevClients, client]);
         setClient({});
-        setClientChat([]);
+        setMessages([]);        
         const date = getCurrentDate();
         const formData = new FormData();
         formData.append('uuid', client.id);
@@ -226,14 +216,14 @@ export const UpdateClientContextProvider = ({children}) => {
         console.log(response.data);        
     }
     
-    const handleUnDeleteClient = async () => {
-        setArchivedClients(archivedClients.filter((cl) => (cl.id !== client.id)));
+    const handleUnDeleteClient = async (myClient) => {
+        setArchivedClients(()=>archivedClients.filter((cl) => (cl.id !== myClient.id)));
         // setClient({});
-        fetchClientChat(client.id);
-        setClients(prevClients => [...prevClients, client]);
+        // fetchClientChat(client.id);
+        setClients(prevClients => [...prevClients, myClient]);
         const date = getCurrentDate();
         const formData = new FormData();
-        formData.append('uuid', client.id);
+        formData.append('uuid', myClient.id);
         formData.append('type', 'undeleted');
         
         const endpoint = `${url_live}/api/whatsapp/undeleted`;
@@ -255,7 +245,6 @@ export const UpdateClientContextProvider = ({children}) => {
         updateClientName,
         handleDeleteClient,
         updateClients,
-        sendMessage,
         handleUnDeleteClient,
     }
 

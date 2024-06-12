@@ -190,7 +190,7 @@ const UserSettings = () => {
                         },
                         }}
                     >
-                        <MenuItem onClick={()=> handleDeleteClient()}>
+                        <MenuItem onClick={()=> {handleDeleteClient(); handleClose()}}>
                             Delete
                         </MenuItem>
                     </Menu>

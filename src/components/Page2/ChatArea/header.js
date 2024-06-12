@@ -9,12 +9,14 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useContext, useState } from "react";
 import ChatAreaContext from "../../../context/chatArea-context";
+import { UnReadClientsContext } from "../../../context/unReadClients-context";
 
 const ChatHeader = () => {
     const { theme } = useTheme();
     const [markAs, setMarkAs] = useState('');
-    const { notificationCount, client, setIsDetailsPanelOpen, setIsSidebarOpen } = useContext(ChatAreaContext);
-
+    const { client, setIsDetailsPanelOpen, setIsSidebarOpen } = useContext(ChatAreaContext);
+    const { notificationCount } = useContext(UnReadClientsContext);
+    
     const handleChange = (event) => {
         setMarkAs(event.target.value);
     };

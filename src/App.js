@@ -11,6 +11,9 @@ import AllClientsPaginationContextProvider from './context/AllClientsPagination-
 import MessagesContextProvider from './context/messages-context';
 import UnReadClientsContextProvider from './context/unReadClients-context';
 import ArchivedClientsContextProvider from './context/archivedClients-context';
+import ClientsFilterContextProvider from './context/clientsFilter-context';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import FilterWithStatusContextProvider from './context/filterWithStatus-context copy';
 
 function App() {
   const { theme } = useTheme();
@@ -19,22 +22,30 @@ function App() {
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <ThemeProvider theme={theme}>
         <ChatbotFlowContextProvider>
-              <AllClientsPaginationContextProvider>
-                <UnReadClientsContextProvider>
-                  <ArchivedClientsContextProvider>
-                    <ChatAreaContextProvider>
+          <AllClientsPaginationContextProvider>
+            <UnReadClientsContextProvider>
+              <ArchivedClientsContextProvider>
+                <ChatAreaContextProvider>
+                  <MessagesContextProvider>
                     <UpdateClientContextProvider>
-                    <MessagesContextProvider>
-                      <CssBaseline />
-                      {/* <Header /> */}
-                      {/* <Page1 /> */}
-                      <Page2 />
-                    </MessagesContextProvider>
+                      <ClientsFilterContextProvider>
+                        <FilterWithStatusContextProvider>
+                          <CssBaseline />
+                          <Router>
+                            <Routes>
+                              {/* <Route path="/page1" element={<Page1 />} /> */}
+                              <Route path="/page2" element={<Page2 />} />
+                              <Route path="/" element={<Page2 />} />
+                            </Routes>
+                          </Router>
+                        </FilterWithStatusContextProvider>
+                      </ClientsFilterContextProvider>
                       </UpdateClientContextProvider>
-                    </ChatAreaContextProvider>
-                  </ArchivedClientsContextProvider>
-                </UnReadClientsContextProvider>
-              </AllClientsPaginationContextProvider>
+                    </MessagesContextProvider>
+                </ChatAreaContextProvider>
+              </ArchivedClientsContextProvider>
+            </UnReadClientsContextProvider>
+          </AllClientsPaginationContextProvider>
         </ChatbotFlowContextProvider>
       </ThemeProvider>
     </Box>

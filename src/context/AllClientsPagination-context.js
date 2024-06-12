@@ -8,7 +8,6 @@ export const AllClientsPaginationContext = createContext();
 
 export const AllClientsPaginationContextProvider = ({ children }) => {
     const [clients, setClients] = useState([]);
-    const [next_page_url, setNext_page_url] = useState('initial');    
     const [current_page, setCurrent_page] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [fetchedClients, setFetchedClients] = useState(false);
@@ -27,6 +26,7 @@ export const AllClientsPaginationContextProvider = ({ children }) => {
         return response.data.data
       } catch (error) {
         console.error('Error fetching clients', error);
+        setIsLoading(false);
         return [];
       }
     }
@@ -80,6 +80,7 @@ export const AllClientsPaginationContextProvider = ({ children }) => {
     clients,
     hasMore,
     isLoading,
+    setIsLoading,
     setClients,
     fetchedClients,
     setFetchedClients,

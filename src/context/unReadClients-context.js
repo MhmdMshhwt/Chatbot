@@ -11,6 +11,8 @@ const UnReadClientsContextProvider = ({ children }) => {
     const [hasMore, setHasMore] = useState(true);
     const [fetchedUnReadClients, setFetchedUnReadClients] = useState([]);
     const [unIsLoading, setUnIsLoading] = useState(false);
+    const [notificationCount, setNotificationCount] = useState(0);
+  
     const unReadClientsEndRef = useRef();
 
   
@@ -21,25 +23,12 @@ const UnReadClientsContextProvider = ({ children }) => {
           `${url_live}/api/whatsapp/chatUnRead?page=${page}`
         );
         setUnIsLoading(false);
-
+        setNotificationCount( response.data.count)
         return response.data.data
-        // if (clients.length === 0) {
-        //   setClients(newClients);
-        //   setFetchedClients(newClients);
-        // } else {
-        //   setClients((prevClients) => [...prevClients, ...newClients]);
-        //   setFetchedClients((prevClients) => [...prevClients, ...newClients]);
-        // }
-        // const nextUrl = response.data.pagination.next_page_url;
-        // console.log('pagination: ', nextUrl);
-        // setNext_page_url(nextUrl);
-        // const addPage = nextUrl !== null? current_page + 1: current_page;
-        // setCurrent_page(addPage);
-        // if (newClients.length < 50) {
-        //   setHasMore(false);
-        // }
+
       } catch (error) {
         console.error('Error fetching clients', error);
+        setUnIsLoading(false)
         return [];
       }
     }
@@ -93,7 +82,8 @@ const UnReadClientsContextProvider = ({ children }) => {
     const contextValue = {
         unReadClients,
         unReadClientsEndRef,
-        unIsLoading,
+      unIsLoading,
+        notificationCount,
     };
 
     return (
