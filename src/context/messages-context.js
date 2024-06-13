@@ -34,7 +34,6 @@ const MessagesContextProvider = ({ children }) => {
 
     const sendMessage = async (message) => {
         try {
-
             const newMessage = {
                 id: Date.now(), // Temporary ID, should be replaced by the server ID later
                 type: "sender_messages",

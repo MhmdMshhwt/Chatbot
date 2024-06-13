@@ -83,7 +83,8 @@ const UnReadClientsContextProvider = ({ children }) => {
         unReadClients,
         unReadClientsEndRef,
       unIsLoading,
-        notificationCount,
+      notificationCount,
+        setNotificationCount,
     };
 
     return (

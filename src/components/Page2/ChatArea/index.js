@@ -16,6 +16,10 @@ const ChatArea = () => {
     messagesEndRef,  
   } = useContext(MessagesContext);
   
+  useEffect(() => {
+    console.log(messages);
+  },[messages])
+
   return (
     <Box className="max-h-screen" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <ChatHeader />

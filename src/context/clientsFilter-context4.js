@@ -28,7 +28,7 @@ const ClientsFilterContextProvider = ({ children }) => {
         }
     };
 
-    const loadMoreResults = async () => {
+    const loadMoreResults = useCallback(async () => {
         if (!hasMore) return;
 
         if (searchValue !== "") {
@@ -42,13 +42,10 @@ const ClientsFilterContextProvider = ({ children }) => {
             }
             setCurrent_page(prevPage => prevPage + 1);    
         }
-    };
+    }, [current_page, searchValue, hasMore, clients.length, setClients, handleClientsFilter]);
 
     const handleSearch = (event) => {
         event.preventDefault();
-        setIsLoading(true);
-        setClients([]);
-        setCurrent_page(1);
         loadMoreResults();
     };
 

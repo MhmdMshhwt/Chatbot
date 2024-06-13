@@ -157,216 +157,210 @@ const UserSettings = () => {
     // };
 
     return (
-        <Drawer
-            anchor={'right'}
-            open={isDetailsPanelOpen}
-            onClose={()=> setIsDetailsPanelOpen(false)}
-        >
-            <Box sx={{ maxWidth: 300, overflowY: 'auto' }} className="max-h-screen">
-                <Box sx={{ padding: '16px', color: theme.palette.primary.main , display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                    <Typography variant="h6">{client.name}</Typography>
-                    <IconButton
-                        aria-label="more"
-                        id="long-button"
-                        aria-controls={open ? 'long-menu' : undefined}
-                        aria-expanded={open ? 'true' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleClick}
-                    >
-                        <MoreVert sx={{ color: theme.palette.primary.main }} />
-                    </IconButton>
-                    <Menu
-                        id="long-menu"
-                        MenuListProps={{
-                        'aria-labelledby': 'long-button',
-                        }}
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        PaperProps={{
-                        style: {
-                            maxHeight: ITEM_HEIGHT * 4.5,
-                            width: '20ch',
-                        },
-                        }}
-                    >
-                        <MenuItem onClick={()=> {handleDeleteClient(); handleClose()}}>
-                            Delete
-                        </MenuItem>
-                    </Menu>
-                </Box>
-                <Divider sx={{ mb: 0 }} />
-                <Box className="p-4" component={'form'} onSubmit={handleSubmit}>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="status-label">Status</InputLabel>
-                        <Select
-                        labelId="status-label"
-                        value={status}
-                        onChange={handleStatusChange}
-                        label="Change status"
-                        >
-                            {displayedStatusOptions.map((state) => (
-                                <MenuItem key={state} value={state}>{state}</MenuItem>        
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    {/* <FormControl fullWidth sx={{ mb: 2 }}>
-                        <TextField
-                        label="Edit customer data"
-                        value={customerData}
-                        onChange={handleCustomerDataChange}
-                        placeholder="Edit customer data"
-                        />
-                    </FormControl> */}
-
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <TextField
-                        label="Add a note"
-                        value={note}
-                        onChange={handleNoteChange}
-                        placeholder="Add a note"
-                        multiline
-                        rows={3}
-                        />
-                    </FormControl>
-
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="assigned-agent-label">Classification</InputLabel>
-                        <Select
-                            labelId="assigned-agent-label"
-                            value={category}
-                            onChange={handleClassificationChange}
-                            label="Classification"
-                        >
-                            {displayedClassificationOptions?.map((item) => (
-                                <MenuItem key={item} value={item}>{item}</MenuItem>        
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    {/* <FormControl fullWidth sx={{ mb: 2 }}>
-                        <TextField
-                            label="Labels"
-                            value={label}
-                            onChange={handleLabelChange}
-                            placeholder="Choose label"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Button
-                                            sx={{
-                                                fontSize: '16px',
-                                                textTransform: 'capitalize'
-                                            }}
-                                        >Create label</Button>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </FormControl> */}
-
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <TextField
-                            label="Follow-up date and time"
-                            type="datetime-local"
-                            value={followUpDateTime ? dayjs(followUpDateTime).format('YYYY-MM-DDTHH:mm') : ''}
-                            onChange={handleFollowUpDateTimeChange}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </FormControl>
-                    
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="status-label">Bot Options</InputLabel>
-                        <Select
-                            labelId="status-label"
-                            value={botOption}
-                            onChange={handleBotChange}
-                            label="Bot Options"
-                        >
-                            {displayedBootOptions?.map((item) => (
-                                <MenuItem key={item} value={item}>{item}</MenuItem>        
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="status-label">Redirct</InputLabel>
-                        <Select
-                        labelId="status-label"
-                        value={employee}
-                        onChange={handleEmployeeChange}
-                        label="Redirct"
-                        >
-                            {displayedEmployees.map((emp,index) => (
-                                <MenuItem key={index} value={emp}>{emp}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    <Button variant="contained" fullWidth sx={{ mb: 3, fontSize: '16px' }} startIcon={<Save />} onClick={handleSubmit}>
-                        Save changes
-                    </Button>
-                </Box>
-                {/* <Divider sx={{ mb: 0 }}/> */}
-                        
-                {/* <Divider sx={{ mb: 0 }}/>
-                <Box sx={{ p:2, display: 'flex', alignItems: 'center', mb: 0 }}>
-                    <Typography variant="body2">Pause bot reply</Typography>
-                </Box> */}
-                <Divider sx={{ mb: 0 }}>Edit User Data</Divider>
-
-                <Box sx={{ p:2, display: 'flex', alignItems: 'center', mb: 0 }}>
-                    <FormControl fullWidth sx={{ mb: 0 }}>
-                        <TextField
-                            label="Name"
-                            value={userName}
-                            onChange={handleNameChange}
-                            placeholder="Change Name"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Button
-                                            onClick={updateName}
-                                            sx={{
-                                                fontSize: '16px',
-                                                textTransform: 'capitalize'
-                                            }}
-                                        >Save</Button>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </FormControl>    
-                </Box>
-                {/* <Divider sx={{ mb: 0 }}/> */}
-                <Box sx={{ p:2, display: 'flex', alignItems: 'center' }}>
-                    {/* <Typography variant="body2">Male</Typography> */}
-                    {/* <FormControl fullWidth sx={{ mb: 2 }}>
-                        <TextField
-                            label="Phone"
-                            value={phone}
-                            onChange={handlePhoneChange}
-                            placeholder="Change Phone"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Button
-                                            sx={{
-                                                fontSize: '16px',
-                                                textTransform: 'capitalize'
-                                            }}
-                                        >Save</Button>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </FormControl> */}
-                </Box>
+        <Box sx={{ maxWidth: 300, overflowY: 'auto', borderLeft: `1px solid ${theme.palette.lightgrey.lightgrey700}` }} className="max-h-screen">
+            <Box sx={{ padding: '16px', color: theme.palette.primary.main , display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                <Typography variant="h6">{client.name}</Typography>
+                <IconButton
+                    aria-label="more"
+                    id="long-button"
+                    aria-controls={open ? 'long-menu' : undefined}
+                    aria-expanded={open ? 'true' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleClick}
+                >
+                    <MoreVert sx={{ color: theme.palette.primary.main }} />
+                </IconButton>
+                <Menu
+                    id="long-menu"
+                    MenuListProps={{
+                    'aria-labelledby': 'long-button',
+                    }}
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    PaperProps={{
+                    style: {
+                        maxHeight: ITEM_HEIGHT * 4.5,
+                        width: '20ch',
+                    },
+                    }}
+                >
+                    <MenuItem onClick={()=> {handleDeleteClient(); handleClose()}}>
+                        Delete
+                    </MenuItem>
+                </Menu>
             </Box>
-        </Drawer>
+            <Divider sx={{ mb: 0 }} />
+            <Box className="p-4" component={'form'} onSubmit={handleSubmit}>
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel id="status-label">Status</InputLabel>
+                    <Select
+                    labelId="status-label"
+                    value={status}
+                    onChange={handleStatusChange}
+                    label="Change status"
+                    >
+                        {displayedStatusOptions.map((state) => (
+                            <MenuItem key={state} value={state}>{state}</MenuItem>        
+                        ))}
+                    </Select>
+                </FormControl>
+
+                {/* <FormControl fullWidth sx={{ mb: 2 }}>
+                    <TextField
+                    label="Edit customer data"
+                    value={customerData}
+                    onChange={handleCustomerDataChange}
+                    placeholder="Edit customer data"
+                    />
+                </FormControl> */}
+
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <TextField
+                    label="Add a note"
+                    value={note}
+                    onChange={handleNoteChange}
+                    placeholder="Add a note"
+                    multiline
+                    rows={3}
+                    />
+                </FormControl>
+
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel id="assigned-agent-label">Classification</InputLabel>
+                    <Select
+                        labelId="assigned-agent-label"
+                        value={category}
+                        onChange={handleClassificationChange}
+                        label="Classification"
+                    >
+                        {displayedClassificationOptions?.map((item) => (
+                            <MenuItem key={item} value={item}>{item}</MenuItem>        
+                        ))}
+                    </Select>
+                </FormControl>
+
+                {/* <FormControl fullWidth sx={{ mb: 2 }}>
+                    <TextField
+                        label="Labels"
+                        value={label}
+                        onChange={handleLabelChange}
+                        placeholder="Choose label"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Button
+                                        sx={{
+                                            fontSize: '16px',
+                                            textTransform: 'capitalize'
+                                        }}
+                                    >Create label</Button>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </FormControl> */}
+
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <TextField
+                        label="Follow-up date and time"
+                        type="datetime-local"
+                        value={followUpDateTime ? dayjs(followUpDateTime).format('YYYY-MM-DDTHH:mm') : ''}
+                        onChange={handleFollowUpDateTimeChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </FormControl>
+                
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel id="status-label">Bot Options</InputLabel>
+                    <Select
+                        labelId="status-label"
+                        value={botOption}
+                        onChange={handleBotChange}
+                        label="Bot Options"
+                    >
+                        {displayedBootOptions?.map((item) => (
+                            <MenuItem key={item} value={item}>{item}</MenuItem>        
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel id="status-label">Redirct</InputLabel>
+                    <Select
+                    labelId="status-label"
+                    value={employee}
+                    onChange={handleEmployeeChange}
+                    label="Redirct"
+                    >
+                        {displayedEmployees.map((emp,index) => (
+                            <MenuItem key={index} value={emp}>{emp}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <Button variant="contained" fullWidth sx={{ mb: 3, fontSize: '16px' }} startIcon={<Save />} onClick={handleSubmit}>
+                    Save changes
+                </Button>
+            </Box>
+            {/* <Divider sx={{ mb: 0 }}/> */}
+                    
+            {/* <Divider sx={{ mb: 0 }}/>
+            <Box sx={{ p:2, display: 'flex', alignItems: 'center', mb: 0 }}>
+                <Typography variant="body2">Pause bot reply</Typography>
+            </Box> */}
+            <Divider sx={{ mb: 0 }}>Edit User Data</Divider>
+
+            <Box sx={{ p:2, display: 'flex', alignItems: 'center', mb: 0 }}>
+                <FormControl fullWidth sx={{ mb: 0 }}>
+                    <TextField
+                        label="Name"
+                        value={userName}
+                        onChange={handleNameChange}
+                        placeholder="Change Name"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Button
+                                        onClick={updateName}
+                                        sx={{
+                                            fontSize: '16px',
+                                            textTransform: 'capitalize'
+                                        }}
+                                    >Save</Button>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </FormControl>    
+            </Box>
+            {/* <Divider sx={{ mb: 0 }}/> */}
+            <Box sx={{ p:2, display: 'flex', alignItems: 'center' }}>
+                {/* <Typography variant="body2">Male</Typography> */}
+                {/* <FormControl fullWidth sx={{ mb: 2 }}>
+                    <TextField
+                        label="Phone"
+                        value={phone}
+                        onChange={handlePhoneChange}
+                        placeholder="Change Phone"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <Button
+                                        sx={{
+                                            fontSize: '16px',
+                                            textTransform: 'capitalize'
+                                        }}
+                                    >Save</Button>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </FormControl> */}
+            </Box>
+        </Box>
     );
 };
 

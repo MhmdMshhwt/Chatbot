@@ -1,8 +1,8 @@
-import { Badge, Box, Button, TextField, Typography } from "@mui/material"
+import { Avatar, Badge, Box, Button, Menu, TextField, Typography } from "@mui/material"
 import styles from './style.module.css'; 
 import { useTheme } from "../../../context/theme-context";
 import Search from "@mui/icons-material/Search";
-import { ChevronLeft, Menu, Notifications } from "@mui/icons-material";
+import { ChevronLeft, Notifications } from "@mui/icons-material";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -11,14 +11,47 @@ import { useContext, useState } from "react";
 import ChatAreaContext from "../../../context/chatArea-context";
 import { UnReadClientsContext } from "../../../context/unReadClients-context";
 
+
+const ITEM_HEIGHT = 48;
+
 const ChatHeader = () => {
     const { theme } = useTheme();
     const [markAs, setMarkAs] = useState('');
     const { client, setIsDetailsPanelOpen, setIsSidebarOpen } = useContext(ChatAreaContext);
-    const { notificationCount } = useContext(UnReadClientsContext);
+    const { notificationCount, setNotificationCount } = useContext(UnReadClientsContext);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    
+    const {
+        unReadClients,
+    } = useContext(UnReadClientsContext);
+    const {
+        setClient,
+    } = useContext(ChatAreaContext);
+    
+    const getLastItemAfterComma = (text) => {
+        const items = text.split(',');
+        return items[items.length - 1].trim();
+    };
+    
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+          return text.substring(0, maxLength) + '...';
+        }
+        return text;
+    }
     
     const handleChange = (event) => {
         setMarkAs(event.target.value);
+    };
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+        // setNotificationCount(notificationCount-1)
     };
 
     return (
@@ -62,10 +95,46 @@ const ChatHeader = () => {
                             sx={{
                                 color: theme.palette.darkgrey.darkgrey600,
                             }}
+                            aria-label="more"
+                            id="long-button"
+                            aria-controls={open ? 'long-menu' : undefined}
+                            aria-expanded={open ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={handleClick}
                         >
                             <Notifications fontSize="10px" />
                         </Button>
                     </Badge>
+
+                    <Menu
+                        id="long-menu"
+                        MenuListProps={{
+                        'aria-labelledby': 'long-button',
+                        }}
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        PaperProps={{
+                        style: {
+                            maxHeight: ITEM_HEIGHT * 4.5,
+                            width: '30ch',
+                        },
+                        }}
+                    >
+                        {unReadClients?.map((client, index) => (
+                            ( index < notificationCount &&
+                                <MenuItem key={client.id} onClick={() => { setClient(client); handleClose() }} class="flex items-center gap-4 p-4 py-3 hover:bg-gray-100" style={{ cursor: 'pointer' }}>    
+                                    {/* <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt=""> */}
+                                    <Avatar>{client.name[0]}</Avatar>
+                                    <div class="font-medium dark:text-white">
+                                        <div>{client.name}</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">{truncateText(getLastItemAfterComma(client.messages_noRead), 30)}</div>
+                                    </div>
+                                </MenuItem>    
+                            )
+                        ))}
+                    </Menu>
+
                     {/* <Button className={styles.searchButton} variant="contained"
                         sx={{
                             color: theme.palette.darkgrey.darkgrey600
@@ -86,7 +155,7 @@ const ChatHeader = () => {
                         // right: '0',
                     }}
                 >
-                    <Menu sx={{ color: "#FFF", cursor: 'pointer' }} onClick={()=> setIsSidebarOpen(true) } />
+                    {/* <Menu sx={{ color: "#FFF", cursor: 'pointer' }} onClick={()=> setIsSidebarOpen(true) } /> */}
                 </Box>
             </Box>
             <Box className={`${styles.buttom} py-2`}>

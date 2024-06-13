@@ -23,9 +23,13 @@ const SidebarHeader = () => {
     const { theme } = useTheme();
     const { value, setValue } = React.useContext(ChatAreaContext);
     const { searchValue, setSearchValue, handleSearch } = React.useContext(ClientsFilterContext);
-    
+    const {
+        clientsEndRef
+      } = React.useContext(AllClientsPaginationContext);
+
     const handleChange = (event, newValue) => {
-      setValue(newValue);
+        setValue(newValue);
+        console.log("ya rab tshtagl: ",clientsEndRef.current);
     };
 
     const handleInputChange = (event) => {
@@ -38,16 +42,40 @@ const SidebarHeader = () => {
             className={`${styles.header} px-4 pt-2`}
             sx={{ bgcolor: theme.palette.primary.main }}
         >
-            {/* <SearchField sx={{color: '#FFF'}} >
-                <SearchIconWrapper onClick={handleSearch} sx={{ cursor: 'pointer' }}>
-                <Search sx={{cursor:'pointer', color: '#FFF'}} />
-                </SearchIconWrapper>
-                <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-                />
-            </SearchField> */}
-            <form className="w-full mx-auto">   
+            <form style={{ display: value === 0 ? 'block' : 'none' }} className="w-full mx-auto">   
+                <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                <div className="relative">
+                    <input type="search" onChange={handleInputChange} value={searchValue} id="default-search" className="block w-full p-4 text-sm text-gray-900 border focus:outline-none border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Name, Phone" required/>
+                    <button type="submit" onClick={handleSearch} className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            <form style={{ display: value === 1 ? 'block' : 'none' }} className="w-full mx-auto">   
+                <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                <div className="relative">
+                    <input type="search" onChange={handleInputChange} value={searchValue} id="default-search" className="block w-full p-4 text-sm text-gray-900 border focus:outline-none border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Name, Phone" required/>
+                    <button type="submit" onClick={handleSearch} className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            <form style={{ display: value === 2 ? 'block' : 'none' }} className="w-full mx-auto">   
+                <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                <div className="relative">
+                    <input type="search" onChange={handleInputChange} value={searchValue} id="default-search" className="block w-full p-4 text-sm text-gray-900 border focus:outline-none border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Name, Phone" required/>
+                    <button type="submit" onClick={handleSearch} className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            <form style={{ display: value === 3 ? 'block' : 'none' }} className="w-full mx-auto">   
                 <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                 <div className="relative">
                     <input type="search" onChange={handleInputChange} value={searchValue} id="default-search" className="block w-full p-4 text-sm text-gray-900 border focus:outline-none border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Name, Phone" required/>
