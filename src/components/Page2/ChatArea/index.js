@@ -17,7 +17,9 @@ const ChatArea = () => {
   } = useContext(MessagesContext);
   
   useEffect(() => {
-    console.log(messages);
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
   },[messages])
 
   return (
@@ -46,7 +48,7 @@ const ChatArea = () => {
             <Loading />
           </Box>
         } */}
-
+        {isLoading && <Loading/>}
         {messages?.map((msg) => (
           <div key={msg.id} className={`my-2 flex flex-col ${msg.type === "sender_messages" ? 'items-end' : 'items-start'}`}>
             <Paper sx={{bgcolor: msg.type === "sender_messages" ? 'rgb(219 234 254)' : 'rgb(243 244 246)'}} className={`px-4 py-2 rounded-lg max-w-xs w-fit`} elevation={1}>
@@ -55,7 +57,6 @@ const ChatArea = () => {
             <Typography variant="caption" className="text-gray-500">{formatDateTime(msg.create_dates.created_at)}</Typography>
           </div>
         ))}
-        {isLoading && <Loading/>}
       </Box>
       <Box
         sx={{
