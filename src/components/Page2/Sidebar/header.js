@@ -23,13 +23,9 @@ const SidebarHeader = () => {
     const { theme } = useTheme();
     const { value, setValue } = React.useContext(ChatAreaContext);
     const { searchValue, setSearchValue, handleSearch } = React.useContext(ClientsFilterContext);
-    const {
-        clientsEndRef
-      } = React.useContext(AllClientsPaginationContext);
-
+    
     const handleChange = (event, newValue) => {
         setValue(newValue);
-        console.log("ya rab tshtagl: ",clientsEndRef.current);
     };
 
     const handleInputChange = (event) => {

@@ -1,15 +1,18 @@
-import { Avatar, Badge, Box, Button, Menu, TextField, Typography } from "@mui/material"
+// import { Avatar, Badge, Box, Button, Menu, TextField, Typography } from "@mui/material"
+import { Typography, List, ListItem, ListItemAvatar, Avatar, ListItemText, IconButton, Box,  Menu, MenuItem, Button, Badge } from '@mui/material';
 import styles from './style.module.css'; 
 import { useTheme } from "../../../context/theme-context";
 import Search from "@mui/icons-material/Search";
 import { ChevronLeft, Notifications } from "@mui/icons-material";
 import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
+// import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useContext, useState } from "react";
 import ChatAreaContext from "../../../context/chatArea-context";
 import { UnReadClientsContext } from "../../../context/unReadClients-context";
+import Loading from '../../loading';
+import { UnReadClientsContext2 } from '../../../context/unReadClients-context2';
 
 
 const ITEM_HEIGHT = 48;
@@ -17,30 +20,35 @@ const ITEM_HEIGHT = 48;
 const ChatHeader = () => {
     const { theme } = useTheme();
     const [markAs, setMarkAs] = useState('');
-    const { client, setIsDetailsPanelOpen, setIsSidebarOpen } = useContext(ChatAreaContext);
-    const { notificationCount, setNotificationCount } = useContext(UnReadClientsContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    
     const {
-        unReadClients,
-    } = useContext(UnReadClientsContext);
-    const {
+        setIsSidebarOpen,
+        value,
+        handleClientChange,
         setClient,
+        client,
+        displayedStatusOptions
     } = useContext(ChatAreaContext);
     
+    const {
+        unIsLoading,
+        unReadClients,
+        unReadClientsEndRef,
+        notificationCount,
+    } = useContext(UnReadClientsContext);
+
     const getLastItemAfterComma = (text) => {
         const items = text.split(',');
         return items[items.length - 1].trim();
     };
-    
+
     const truncateText = (text, maxLength) => {
         if (text.length > maxLength) {
-          return text.substring(0, maxLength) + '...';
+        return text.substring(0, maxLength) + '...';
         }
         return text;
     }
-    
     const handleChange = (event) => {
         setMarkAs(event.target.value);
     };
@@ -159,7 +167,7 @@ const ChatHeader = () => {
                 </Box>
             </Box>
             <Box className={`${styles.buttom} py-2`}>
-                <Typography variant="body1" sx={{color: '#FFF', cursor: 'pointer'}} onClick={()=>setIsDetailsPanelOpen(true)} >{client.name}</Typography>
+                <Typography variant="body1" sx={{color: '#FFF', cursor: 'pointer'}}  >{client.name}</Typography>
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl sx={{ m: 1, minWidth: 120 }} size="small" style={{ borderColor: 'white', color: 'white' }}>
                         <InputLabel id="demo-select-small-label" style={{ color: 'white' }}>Mark as</InputLabel>
@@ -176,12 +184,12 @@ const ChatHeader = () => {
                                 }
                             }}
                         >
-                            <MenuItem value="">
+                            {/* <MenuItem value="">
                             <em>None</em>
                             </MenuItem>
                             <MenuItem value={10}>Ten</MenuItem>
                             <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem> */}
                         </Select>
                     </FormControl>
                 </Box>

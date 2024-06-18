@@ -9,7 +9,7 @@ const ClientsFilterContextProvider = ({ children }) => {
     const { clients, setClients, clientsEndRef, setIsLoading } = useContext(AllClientsPaginationContext);
     const [current_page, setCurrent_page] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue2, setSearchValue2] = useState("");
     
     const handleClientsFilter = async (page, value) => {
         try {

@@ -48,6 +48,8 @@ const UserSettings = () => {
     const [response, setResponse] = useState(null)
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isDisabled, setIsDisabled] = useState(true);
+    const [isNameDisabled, setIsNameDisabled] = useState(true);
     const {
         AddEmployee,
         updateStatus,
@@ -66,11 +68,13 @@ const UserSettings = () => {
         setFollowUpDateTime(client['Follow history'])
         setUserName(client.name);
         setEmployee(client.employee);
+        setIsDisabled(true);
     }, [client]);
     
     const updateName = async () => {
         if(userName !== client.name)
             updateClientName(userName);
+        setIsNameDisabled(true);
     }
 
     const handleSubmit = async (event) => {
@@ -98,6 +102,7 @@ const UserSettings = () => {
             AddEmployee(employee);
 
         updateClients()
+        setIsDisabled(true);
         setLoading(false);
     };
 
@@ -112,10 +117,20 @@ const UserSettings = () => {
 
     const handleClassificationChange = (event) => {
         setCategory(event.target.value);
+        setUserName(event.target.value);
+
+        if (client.classification !== event.target.value)
+            setIsDisabled(false);
+        else
+            setIsDisabled(true);
     };
 
     const handleNameChange = (event) => {
         setUserName(event.target.value);
+        if (client.name !== event.target.value)
+            setIsDisabled(false);
+        else
+            setIsDisabled(true);
     };
     
     const handlePhoneChange = (event) => {
@@ -124,37 +139,46 @@ const UserSettings = () => {
 
     const handleNoteChange = (event) => {
         setNote(event.target.value);
+
+        if (event.target.value !== '')
+            setIsDisabled(false);
+        else
+            setIsDisabled(true);
     };
 
     const handleStatusChange = (event) => {
         setStatus(event.target.value);
+        if (event.target.value !== client.status)
+            setIsDisabled(false);
+        else
+            setIsDisabled(true);
     };
 
     
     const handleBotChange = (event) => {
         setBotOption(event.target.value);
+        setIsDisabled(false);
     };
     
     const handleEmployeeChange = (event) => {
         setEmployee(event.target.value);
+        if (event.target.value !== client.employee)
+            setIsDisabled(false);
+        else
+            setIsDisabled(true);
     };
 
     const handleFollowUpDateTimeChange = (event) => {
         const selectedDateTime = event.target.value;
         const formattedDateTime = dayjs(selectedDateTime).format('YYYY-MM-DD HH:mm:ss');
+        const userDataTime = dayjs(client['Follow history']).format('YYYY-MM-DD HH:mm:ss');
+        
         setFollowUpDateTime(formattedDateTime);
+        if (formattedDateTime !== userDataTime)
+            setIsDisabled(false);
+        else
+            setIsDisabled(true);
     };
-
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     // Handle form submission logic here
-    //     console.log('Assigned Agent:', assignedAgent);
-    //     // console.log('Label:', label);
-    //     console.log('Note:', note);
-    //     console.log('Status:', status);
-    //     console.log('Customer Data:', customerData);
-    //     console.log('Follow Up Date:', followUpDate);
-    // };
 
     return (
         <Box sx={{ maxWidth: 300, overflowY: 'auto', borderLeft: `1px solid ${theme.palette.lightgrey.lightgrey700}` }} className="max-h-screen">
@@ -301,7 +325,7 @@ const UserSettings = () => {
                     </Select>
                 </FormControl>
 
-                <Button variant="contained" fullWidth sx={{ mb: 3, fontSize: '16px' }} startIcon={<Save />} onClick={handleSubmit}>
+                <Button variant="contained" fullWidth sx={{ mb: 3, fontSize: '16px' }} startIcon={<Save />} onClick={handleSubmit} disabled={isDisabled}>
                     Save changes
                 </Button>
             </Box>
@@ -325,6 +349,7 @@ const UserSettings = () => {
                                 <InputAdornment position="end">
                                     <Button
                                         onClick={updateName}
+                                        disabled={isNameDisabled}
                                         sx={{
                                             fontSize: '16px',
                                             textTransform: 'capitalize'

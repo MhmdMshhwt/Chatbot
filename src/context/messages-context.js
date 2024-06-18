@@ -13,6 +13,8 @@ const MessagesContextProvider = ({ children }) => {
     const messagesEndRef = useRef();
     const { client } = useContext(ChatAreaContext);
     const pollingInterval = useRef(null);
+    const [textAreaValue, setTextAreaValue] = useState('');
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     const fetchMessages = async (page, clientId) => {
         try {
@@ -20,7 +22,7 @@ const MessagesContextProvider = ({ children }) => {
             const response = await axios.get(
                 `${url_live}/api/whatsapp/chat/${clientId}?page=${page}`
             );
-            setIsLoading(false);
+            
             return response.data.data.sort((a, b) => new Date(a.create_dates.created_at) - new Date(b.create_dates.created_at));
         } catch (error) {
             console.error('Error fetching messages', error);
@@ -39,12 +41,12 @@ const MessagesContextProvider = ({ children }) => {
         }
     };
 
-    const sendMessage = async (message) => {
+    const sendMessage = async (messageData) => {
         try {
             const newMessage = {
                 id: Date.now(),
                 type: "sender_messages",
-                messages: message,
+                messages: messageData.text || messageData.file?.name || "Audio message",
                 type_messages: "personal",
                 status: "read",
                 client_id: client.id,
@@ -60,8 +62,15 @@ const MessagesContextProvider = ({ children }) => {
 
             const formData = new FormData();
             formData.append('uuid', client.id);
-            formData.append('type', 'text');
-            formData.append('text', message);
+            formData.append('type', messageData.type);
+            if (messageData.type === 'text') {
+                formData.append('text', messageData.text);
+            } else if (messageData.type === 'file') {
+                formData.append('file', messageData.file);
+            } else if (messageData.type === 'audio') {
+                const audioBlob = new Blob([messageData.audio], { type: 'audio/wav' });
+                formData.append('file', audioBlob, 'audio.wav');
+            }
 
             const endpoint = `${url_live}/api/whatsapp/sendMessages`;
             const response = await axios.post(endpoint, formData, {
@@ -81,6 +90,7 @@ const MessagesContextProvider = ({ children }) => {
 
         if (Object.keys(client).length === 0) return;
         const newMessages = await fetchMessages(current_page, client.id);
+        setIsLoading(false);
 
         if (newMessages.length === 0) {
             setHasMore(false);
@@ -95,25 +105,6 @@ const MessagesContextProvider = ({ children }) => {
         setCurrent_page(1);
         setHasMore(true);
         loadMoreResults();
-
-        if (pollingInterval.current) {
-            clearInterval(pollingInterval.current);
-        }
-
-        if (Object.keys(client).length !== 0) {
-            pollingInterval.current = setInterval(async () => {
-                const newMessages = await fetchNewMessages(client.id);
-                if (newMessages.length > 0) {
-                    setMessages(prevMessages => [...prevMessages, ...newMessages]);
-                }
-            }, 3000); // Polling every 3 seconds
-        }
-
-        return () => {
-            if (pollingInterval.current) {
-                clearInterval(pollingInterval.current);
-            }
-        };
     }, [client]);
 
     const handleScroll = useCallback(() => {
@@ -142,6 +133,10 @@ const MessagesContextProvider = ({ children }) => {
         messagesEndRef,
         sendMessage,
         setMessages,
+        textAreaValue, 
+        setTextAreaValue,
+        showEmojiPicker,
+        setShowEmojiPicker
     };
 
     return (

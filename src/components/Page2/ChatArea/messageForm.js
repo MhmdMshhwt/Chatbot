@@ -1,6 +1,6 @@
 import { Box, Button, TextField, MenuItem, Select, InputBase, styled } from "@mui/material";
 import styles from './style.module.css';
-import { AttachFile, Mic, SmartToy, TextFormat } from "@mui/icons-material";
+import { AttachFile, CameraAltOutlined, Mic, SmartToy, TextFormat } from "@mui/icons-material";
 import { useTheme } from "../../../context/theme-context";
 import { useContext, useState } from "react";
 import SendIcon from '@mui/icons-material/Send';
@@ -38,8 +38,7 @@ const MessageForm = () => {
     const { theme } = useTheme();
     const [type, setType] = useState('Human..');
     const [selectedOption, setSelectedOption] = useState('');
-    const [textAreaValue, setTextAreaValue] = useState('');
-    const { sendMessage } = useContext(MessagesContext);
+    const { sendMessage, textAreaValue, setTextAreaValue, showEmojiPicker, setShowEmojiPicker } = useContext(MessagesContext);
 
     const handleSelectChange = (event) => {
         setSelectedOption(event.target.value);
@@ -52,9 +51,11 @@ const MessageForm = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         setTextAreaValue("");
-        sendMessage(textAreaValue);
+        sendMessage({
+          text: textAreaValue,
+          type: "text",
+        });
     };
-    
     return (        
         <Box className='w-full flex gap-2'>
             <Box className={styles.messageAttachButtons}>
@@ -63,16 +64,16 @@ const MessageForm = () => {
                 </Button>
                 <Button variant="outlined" className={`${styles.messageAttachButton}`}
                     sx={{
-                        color: 'rgb(107 114 128)',
-                        borderColor: 'rgb(107 114 128)',
+                        color: theme.palette.tertiary.golden500,
+                        borderColor: theme.palette.tertiary.golden500,
                     }}
                 >
-                    <TextFormat fontSize="12px" />
+                    <CameraAltOutlined fontSize="12px" />
                 </Button>
                 <Button variant="outlined" className={styles.messageAttachButton}
                     sx={{
-                        color: theme.palette.tertiary.golden500,
-                        borderColor: theme.palette.tertiary.golden500,
+                        color: 'rgb(107 114 128)',
+                        borderColor: 'rgb(107 114 128)',
                     }}
                 >
                     <AttachFile fontSize="12px" />
@@ -102,20 +103,17 @@ const MessageForm = () => {
                     paddingLeft: '.5rem'
                 }}
                 >
-                <NoFocusOutlineSelect
-                    value={selectedOption}
-                    onChange={handleSelectChange}
-                    displayEmpty
-                    input={<InputBase />}
-                    sx={{ width: '100px', borderRight: '1px solid #ccc' }}
-                >
-                    <MenuItem value="">
-                    <em>Human...</em>
-                    </MenuItem>
-                    <MenuItem value="option1">Option 1</MenuItem>
-                    <MenuItem value="option2">Option 2</MenuItem>
-                    <MenuItem value="option3">Option 3</MenuItem>
-                </NoFocusOutlineSelect>
+                <Button
+                    variant="text"
+                    className={styles.messageAttachButton}
+                    // sx={{
+                    //     color: theme.palette.tertiary.golden500,
+                    //     borderColor: theme.palette.tertiary.golden500,
+                    // }}
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    >
+                    😊
+                </Button>
                 <NoFocusOutlineInputBase
                     value={textAreaValue}
                     onChange={handleTextAreaChange}

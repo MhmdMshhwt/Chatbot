@@ -14,6 +14,7 @@ import ArchivedClientsContextProvider from './context/archivedClients-context';
 import ClientsFilterContextProvider from './context/clientsFilter-context';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import FilterWithStatusContextProvider from './context/filterWithStatus-context copy';
+import UnReadClientsContextProvider2 from './context/unReadClients-context2';
 
 function App() {
   const { theme } = useTheme();
@@ -24,6 +25,7 @@ function App() {
         <ChatbotFlowContextProvider>
           <AllClientsPaginationContextProvider>
             <UnReadClientsContextProvider>
+            <UnReadClientsContextProvider2>
               <ArchivedClientsContextProvider>
                 <ChatAreaContextProvider>
                   <MessagesContextProvider>
@@ -44,6 +46,7 @@ function App() {
                     </MessagesContextProvider>
                 </ChatAreaContextProvider>
               </ArchivedClientsContextProvider>
+            </UnReadClientsContextProvider2>
             </UnReadClientsContextProvider>
           </AllClientsPaginationContextProvider>
         </ChatbotFlowContextProvider>

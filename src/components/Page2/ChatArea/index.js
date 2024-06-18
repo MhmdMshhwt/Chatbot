@@ -8,12 +8,14 @@ import ChatAreaContext from '../../../context/chatArea-context';
 import Loading from '../../loading';
 import { MessagesContext } from '../../../context/messages-context';
 import { formatDateTime } from '../../../helpers.js/formatDateTime';
+import EmojiPicker from './empjiPicker';
 
 const ChatArea = () => {
   const {
     messages,
     isLoading,
-    messagesEndRef,  
+    messagesEndRef, 
+    showEmojiPicker
   } = useContext(MessagesContext);
   
   useEffect(() => {
@@ -70,6 +72,15 @@ const ChatArea = () => {
         {/* <TextField fullWidth placeholder="Type a message..." />
         <Button variant="contained" sx={{ ml: 2 }}>Send</Button> */}
         <MessageForm />
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+      {showEmojiPicker && <EmojiPicker /> }  
       </Box>
     </Box>
   );
