@@ -26,7 +26,7 @@ const AllClients = () => {
     
     const getLastItemAfterComma = (text) => {
         const items = text.split(',');
-        return items[items.length - 1].trim();
+        return items[0].trim();
     };
     const truncateText = (text, maxLength) => {
         if (text.length > maxLength) {
@@ -44,7 +44,7 @@ const AllClients = () => {
             >
               {clients && clients?.map((client) => (
                 
-                <div key={client.id} onClick={() => { setClient(client); setIsSidebarOpen(false) }} class="flex items-center gap-4 p-4 py-3 hover:bg-gray-100 cursor-pointer ">
+                <div key={client.id} onClick={() => { handleClientChange(client); setIsSidebarOpen(false) }} class="flex items-center gap-4 p-4 py-3 hover:bg-gray-100 cursor-pointer ">
                     {/* <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt=""> */}
                     <Avatar>{client.name[0]}</Avatar>
                     <div class="font-medium dark:text-white">

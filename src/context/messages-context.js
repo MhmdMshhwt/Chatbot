@@ -85,12 +85,13 @@ const MessagesContextProvider = ({ children }) => {
         }
     };
 
-    const loadMoreResults = async () => {
+    const loadMoreResults = async (client) => {
         if (!hasMore) return;
 
-        if (Object.keys(client).length === 0) return;
+        // if (Object.keys(client).length === 0) return;
         const newMessages = await fetchMessages(current_page, client.id);
         setIsLoading(false);
+        newMessages.length === 0 && console.log("have no messages yet")
 
         if (newMessages.length === 0) {
             setHasMore(false);
@@ -104,17 +105,19 @@ const MessagesContextProvider = ({ children }) => {
         setMessages([]);
         setCurrent_page(1);
         setHasMore(true);
-        loadMoreResults();
+        if (client && client.id) {
+            loadMoreResults(client);
+        }
     }, [client]);
 
     const handleScroll = useCallback(() => {
         if (hasMore) {
             const { scrollTop } = messagesEndRef.current;
-            if (scrollTop === 0) {
-                loadMoreResults();
+            if (scrollTop === 0 && client && client.id) {
+                loadMoreResults(client);
             }
         }
-    }, [hasMore, loadMoreResults]);
+    }, [hasMore, loadMoreResults, client]);
 
     useEffect(() => {
         if (!messagesEndRef.current) return;

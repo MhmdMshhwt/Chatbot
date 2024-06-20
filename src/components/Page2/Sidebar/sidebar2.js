@@ -13,7 +13,8 @@ const Sidebar2 = () => {
     setIsSidebarOpen,
     value,
     setClient,
-    displayedStatusOptions
+    displayedStatusOptions,
+    handleClientChange
   } = useContext(ChatAreaContext);
   
   const {
@@ -67,7 +68,7 @@ const Sidebar2 = () => {
             sx={{flex: '1',display: 'flex', flexDirection: 'column', alignSelf: 'stretch' }}
           >
             { statusClients && statusClients?.map((client) => (
-              <ListItem button key={client.id} onClick={() => { setClient(client); setIsSidebarOpen(false) }} className='items-start'>
+              <ListItem button key={client.id} onClick={() => { handleClientChange(client); setIsSidebarOpen(false) }} className='items-start'>
                 <ListItemAvatar>
                   <Avatar>{client.name[0]}</Avatar>
                 </ListItemAvatar>

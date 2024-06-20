@@ -72,8 +72,10 @@ const UserSettings = () => {
     }, [client]);
     
     const updateName = async () => {
-        if(userName !== client.name)
-            updateClientName(userName);
+        if (userName !== client.name) {
+            const res = await updateClientName(userName);
+            res === 200 && alert('"Name" updated successfuly');
+        }
         setIsNameDisabled(true);
     }
 
@@ -83,23 +85,36 @@ const UserSettings = () => {
         setError(null);
 
         // first update status
-        if(status !== client.status)
-            updateStatus(status);
+        if (status !== client.status) {
+            const res = await updateStatus(status);
+            res === 200 && alert('"Status" updated successfuly');
+        }
+        
         // add new note
-        if (note !== '')
-            AddComment(note);
+        if (note !== '') {
+            const res = await AddComment(note);
+            res === 200 && alert('"Note" added successfuly');
+        }
         // update classification
-        if (category !== client.classification)
-            updateClassification(category);
+        if (category !== client.classification) {
+            const res = await updateClassification(category);
+            res === 200 && alert('"Classification" updated successfuly');
+        }
         
-        if (followUpDateTime !== client['Follow history'])
-            updateFollowHistory(followUpDateTime);
+        if (followUpDateTime !== client['Follow history']) {
+            const res = await updateFollowHistory(followUpDateTime);
+            res === 200 && alert('"Follow Up Date" updated successfuly');
+        }
         
-        if (botOption !== '')
-            addBoot(botOption);
+        if (botOption !== '') {
+            const res = await addBoot(botOption);
+            res === 200 && alert('"Bot" sent successfuly');
+        }
 
-        if (employee !== client.employee)
-            AddEmployee(employee);
+        if (employee !== client.employee) {
+            const res = await AddEmployee(employee);
+            res === 200 && alert('"Employee" forward successfuly');
+        }
 
         updateClients()
         setIsDisabled(true);

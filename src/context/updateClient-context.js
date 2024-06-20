@@ -43,7 +43,7 @@ export const UpdateClientContextProvider = ({children}) => {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log(response.data);
+        console.log('test response', response.status);
         setClients(clients.map(myClient => {
             if (myClient.id === client.id) {
               // Create a *new* object with changes
@@ -54,6 +54,8 @@ export const UpdateClientContextProvider = ({children}) => {
               return myClient;
             }
         }));
+
+        return response.status;
     }
 
     const AddEmployee = async(employee) => {
@@ -80,6 +82,8 @@ export const UpdateClientContextProvider = ({children}) => {
               return myClient;
             }
         }));
+
+        return response.status;
     }
     
     const AddComment = async (comment) => {
@@ -97,6 +101,7 @@ export const UpdateClientContextProvider = ({children}) => {
         });
         console.log(response.data);
 
+        return response.status;
     }
     
     const updateClassification = async (category) => {
@@ -123,6 +128,8 @@ export const UpdateClientContextProvider = ({children}) => {
               return myClient;
             }
         }));
+
+        return response.status;
     }
     const addBoot = async (boot) => {
         const matchedBoot = bootOptions.filter((item)=> item.name === boot)
@@ -139,6 +146,7 @@ export const UpdateClientContextProvider = ({children}) => {
         });
         console.log(response.data);
 
+        return response.status;
     }
 
     const updateFollowHistory = async (followHistory) => {
@@ -164,6 +172,8 @@ export const UpdateClientContextProvider = ({children}) => {
               return myClient;
             }
         }));
+
+        return response.status;
     }
     
     const updateClientName = async (name) => {
@@ -190,6 +200,8 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
+        
+        return response.status;
     }
     
     const getCurrentDate = () => {
@@ -214,6 +226,9 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);        
+        
+        response === 200 && alert('"Client" deleted successfuly');
+
     }
     
     const handleUnDeleteClient = async (myClient) => {
@@ -233,6 +248,9 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);        
+
+        response === 200 && alert('"Client" undeleted successfuly');
+
     }
 
     const contextValue = {

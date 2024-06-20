@@ -92,7 +92,7 @@ export const ChatAreaContextProvider = ({children}) => {
         return uniqueArray;
     };
 
-    const handleClientChange = async (where, clientId) => {
+    const handleClientChange = async (newClient) => {
         // let targetClient;
         // if (where === "all") {
         //     targetClient = clients.filter(client => client.id === clientId);
@@ -103,9 +103,8 @@ export const ChatAreaContextProvider = ({children}) => {
         //     targetClient = archivedClients.filter(client => client.id === clientId);
         // }
         // setClientChat([]);
-        // setClient(targetClient[0]);
-
-        // console.log('test client change ',targetClient[0])
+        setClient(newClient);
+        console.log('test client change from handle change', newClient);
     }
 
     useEffect(() => {
