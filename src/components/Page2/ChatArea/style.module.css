@@ -25,9 +25,34 @@
     display: flex;
     align-items: center;
     gap: .3rem;
+    width: fit-content;
 }
 .messageAttachButton{
     border-radius: 100% !important;
     padding: .3rem !important;
-    min-width: 0 !important;
+    min-width: 30px !important;
+}
+.sentDocument {
+    display: flex;
+    align-items: center;
+    background-color: #e1ffc7; /* WhatsApp-like green background */
+    border-radius: 8px;
+    padding: 10px;
+    margin: 5px 0;
+    color: #000;
+    text-decoration: none;
+    width: fit-content;
+    &:hover {
+        background-color: #d1f7b7;
+    }
+    & .fileIcon {
+        margin-right: 10px;
+        font-size: 20px; /* Adjust icon size */
+    }
+    & .fileName {
+        font-weight: 500;
+        font-size: 14px;
+        color: #000;
+    }
+
 }

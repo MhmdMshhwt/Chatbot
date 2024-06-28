@@ -5,10 +5,12 @@ import ChatHeader from './header';
 import bgImage from '../../../assets/images/ChatDefaultImage.jpg';
 import MessageForm from './messageForm';
 import ChatAreaContext from '../../../context/chatArea-context';
-import Loading from '../../loading';
+import Loading from '../../common/load/parent/loading';
 import { MessagesContext } from '../../../context/messages-context';
 import { formatDateTime } from '../../../helpers.js/formatDateTime';
 import EmojiPicker from './empjiPicker';
+import { InsertDriveFile } from '@mui/icons-material';
+import styles from './style.module.css';
 
 const ChatArea = () => {
   const {
@@ -17,7 +19,10 @@ const ChatArea = () => {
     messagesEndRef, 
     showEmojiPicker
   } = useContext(MessagesContext);
-  
+  const {
+    client,
+  } = useContext(ChatAreaContext);
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
@@ -54,7 +59,18 @@ const ChatArea = () => {
         {messages?.map((msg) => (
           <div key={msg.id} className={`my-2 flex flex-col ${msg.type === "sender_messages" ? 'items-end' : 'items-start'}`}>
             <Paper sx={{bgcolor: msg.type === "sender_messages" ? 'rgb(219 234 254)' : 'rgb(243 244 246)'}} className={`px-4 py-2 rounded-lg max-w-xs w-fit`} elevation={1}>
-              <Typography variant="body1">{msg.messages}</Typography>
+              {msg.image ? (
+                <img width={150} height={150} src={URL.createObjectURL(msg.url)} /> 
+              ): msg.document?(
+                <a href={URL.createObjectURL(msg.url)} target="_blank" rel="noopener noreferrer" className={styles.sentDocument}>
+                  <InsertDriveFile className={styles.fileIcon} />
+                  <span className={styles.fileName} >{msg.url.name}</span>
+                </a>
+              ) : msg.audio?(
+                <audio controls src={msg.audioUrl.blobURL} className="sent-audio" />
+              ):(
+                <Typography variant="body1">{msg.messages}</Typography>
+              )}
             </Paper>
             <Typography variant="caption" className="text-gray-500">{formatDateTime(msg.create_dates.created_at)}</Typography>
           </div>
@@ -71,7 +87,7 @@ const ChatArea = () => {
       >
         {/* <TextField fullWidth placeholder="Type a message..." />
         <Button variant="contained" sx={{ ml: 2 }}>Send</Button> */}
-        <MessageForm />
+        {client?.id && <MessageForm />}
       </Box>
       <Box
         sx={{

@@ -3,7 +3,7 @@ import { List, ListItem, ListItemAvatar, Avatar, ListItemText, Typography, Box, 
 import SidebarHeader from './header';
 import { useTheme } from '../../../context/theme-context';
 import ChatAreaContext from '../../../context/chatArea-context';
-import Loading from '../../loading';
+import Loading from '../../common/load/parent/loading';
 import { FilterWithStatusContext } from '../../../context/filterWithStatus-context copy';
 
 
@@ -14,7 +14,7 @@ const Sidebar2 = () => {
     value,
     setClient,
     displayedStatusOptions,
-    handleClientChange
+    handleClientClick
   } = useContext(ChatAreaContext);
   
   const {
@@ -68,7 +68,7 @@ const Sidebar2 = () => {
             sx={{flex: '1',display: 'flex', flexDirection: 'column', alignSelf: 'stretch' }}
           >
             { statusClients && statusClients?.map((client) => (
-              <ListItem button key={client.id} onClick={() => { handleClientChange(client); setIsSidebarOpen(false) }} className='items-start'>
+              <ListItem button key={client.id} onClick={() => { handleClientClick(client); setIsSidebarOpen(false) }} className='items-start'>
                 <ListItemAvatar>
                   <Avatar>{client.name[0]}</Avatar>
                 </ListItemAvatar>

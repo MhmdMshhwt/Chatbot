@@ -1,3 +1,3 @@
 
 
-export const url_live = "https://istshartk.com/public";
+export const url_live = "https://syasaguid.com/whatsapp/whatsapp/public";

@@ -28,6 +28,11 @@ export const ChatAreaContextProvider = ({children}) => {
     const { unReadClients, setUnReadClients } = useContext(UnReadClientsContext);
     const { archivedClients, setArchivedClients } = useContext(ArchivedClientsContext);
 
+    const handleClientClick = (client) => {
+        setClient(client);
+        console.log("client change: ", client);
+    };
+
     const fetchEmployees = () => {
         axios.get(`${url_live}/api/whatsapp/employees`)
             .then(response => {
@@ -138,6 +143,7 @@ export const ChatAreaContextProvider = ({children}) => {
         setIsSidebarOpen,
         handleClientChange,
         isLoading,
+        handleClientClick
     }
 
     return (

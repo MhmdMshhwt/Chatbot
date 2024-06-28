@@ -6,7 +6,7 @@ import axios from "axios";
 export const UnReadClientsContext2 = createContext();
 
 const UnReadClientsContextProvider2 = ({ children }) => {
-    const [unReadClients, setUnReadClients] = useState([]);
+    const [unReadClients2, setUnReadClients2] = useState([]);
     const [current_page, setCurrent_page] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [fetchedUnReadClients, setFetchedUnReadClients] = useState([]);
@@ -41,11 +41,11 @@ const UnReadClientsContextProvider2 = ({ children }) => {
     console.log('and im here now ')
     if (newData.length === 0) {
       setHasMore(false);
-    } else if (unReadClients.length === 0) {
-        setUnReadClients(newData);
+    } else if (unReadClients2.length === 0) {
+        setUnReadClients2(newData);
         setCurrent_page(prevPage => prevPage + 1);
     } else {
-      setUnReadClients(prevResults => [...prevResults, ...newData]);
+      setUnReadClients2(prevResults => [...prevResults, ...newData]);
       setCurrent_page(prevPage => prevPage + 1);
     }
   };
@@ -80,8 +80,9 @@ const UnReadClientsContextProvider2 = ({ children }) => {
 
 
     const contextValue = {
-        unReadClients,
-        unReadClientsEndRef2,
+      unReadClients2,
+      setUnReadClients2,
+      unReadClientsEndRef2,
       unIsLoading,
       notificationCount,
         setNotificationCount,

@@ -39,6 +39,8 @@ const UnReadClientsContextProvider = ({ children }) => {
     console.log('im here now ')
     const newData = await fetchAllUnClients(current_page);
     console.log('and im here now ')
+    console.log('and im here now with new data: ', newData)
+
     if (newData.length === 0) {
       setHasMore(false);
     } else if (unReadClients.length === 0) {
@@ -80,11 +82,12 @@ const UnReadClientsContextProvider = ({ children }) => {
 
 
     const contextValue = {
-        unReadClients,
-        unReadClientsEndRef,
+      unReadClients,
+      setUnReadClients,
+      unReadClientsEndRef,
       unIsLoading,
       notificationCount,
-        setNotificationCount,
+      setNotificationCount,
     };
 
     return (

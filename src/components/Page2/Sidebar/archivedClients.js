@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import Loading from "../../loading";
+import Loading from "../../common/load/parent/loading";
 import { ArchivedClientsContext } from "../../../context/archivedClients-context";
 import { List, ListItem, ListItemAvatar, Avatar, ListItemText, IconButton, Box,  Menu, MenuItem } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
@@ -17,8 +17,8 @@ const ArchivedClients = () => {
     setIsSidebarOpen,
     fetchClientChat,
     value,
-    handleClientChange,
     setClient,
+    handleClientClick,
     displayedStatusOptions
   } = useContext(ChatAreaContext);
   const { handleUnDeleteClient } = useContext(UpdateClientContext);
@@ -48,7 +48,7 @@ const ArchivedClients = () => {
         sx={{display: value === 3? 'block': 'none'}}
       >
         {archivedClients?.map((client) => (
-          <ListItem button key={client.id} onClick={() => { handleClientChange('archived', client.id); }} className='items-start'>
+          <ListItem button key={client.id} onClick={() => { handleClientClick(client); }} className='items-start'>
             <ListItemAvatar>
               <Avatar>{client?.name[0]}</Avatar>
             </ListItemAvatar>

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import Loading from "../../loading";
+import Loading from "../../common/load/parent/loading";
 import { UnReadClientsContext } from "../../../context/unReadClients-context";
 import { Typography, List, ListItem, ListItemAvatar, Avatar, ListItemText, IconButton, Box,  Menu, MenuItem } from '@mui/material';
 import ChatAreaContext from "../../../context/chatArea-context";
@@ -12,7 +12,7 @@ const UnreadClients = () => {
         setIsSidebarOpen,
         fetchClientChat,
         value,
-        handleClientChange,
+        handleClientClick,
         setClient,
         displayedStatusOptions
     } = useContext(ChatAreaContext);
@@ -43,7 +43,7 @@ const UnreadClients = () => {
         sx={{display: value === 2? 'block': 'none'}}
       >
         {unReadClients?.map((client) => (
-          <ListItem button key={client.client_id} onClick={() => { handleClientChange(client); setIsSidebarOpen(false) }} className='items-start'>
+          <ListItem button key={client.client_id} onClick={() => { handleClientClick(client); setIsSidebarOpen(false) }} className='items-start'>
             <ListItemAvatar>
               <Avatar>{client?.name[0]}</Avatar>
             </ListItemAvatar>

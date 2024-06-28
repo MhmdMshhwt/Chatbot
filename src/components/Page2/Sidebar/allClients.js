@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AllClientsPaginationContext } from "../../../context/AllClientsPagination-context";
-import Loading from "../../loading";
+import Loading from "../../common/load/parent/loading";
 import { List, ListItem, ListItemAvatar, Avatar, ListItemText, IconButton, Box,  Menu, MenuItem, Typography } from '@mui/material';
 import { useTheme } from "../../../context/theme-context";
 import ChatAreaContext from "../../../context/chatArea-context";
@@ -15,7 +15,8 @@ const AllClients = () => {
         value,
         handleClientChange,
         setClient,
-        displayedStatusOptions
+        displayedStatusOptions,
+        handleClientClick,
     } = useContext(ChatAreaContext);
     
     const {
@@ -44,7 +45,7 @@ const AllClients = () => {
             >
               {clients && clients?.map((client) => (
                 
-                <div key={client.id} onClick={() => { handleClientChange(client); setIsSidebarOpen(false) }} class="flex items-center gap-4 p-4 py-3 hover:bg-gray-100 cursor-pointer ">
+                <div key={client.id} onClick={() => { handleClientClick(client); setIsSidebarOpen(false) }} class="flex items-center gap-4 p-4 py-3 hover:bg-gray-100 cursor-pointer ">
                     {/* <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt=""> */}
                     <Avatar>{client.name[0]}</Avatar>
                     <div class="font-medium dark:text-white">

@@ -6,6 +6,9 @@ import moment from "moment/moment";
 import { AllClientsPaginationContext } from "./AllClientsPagination-context";
 import { ArchivedClientsContext } from "./archivedClients-context";
 import { MessagesContext } from "./messages-context";
+import { UnReadClientsContext } from "./unReadClients-context";
+import { FilterWithStatusContext } from "./filterWithStatus-context copy";
+import { UnReadClientsContext2 } from "./unReadClients-context2";
 
 
 const UpdateClientContext = createContext();
@@ -15,48 +18,57 @@ export const UpdateClientContextProvider = ({children}) => {
     const { setClients, clients } = useContext(AllClientsPaginationContext);
     const { setArchivedClients, archivedClients } = useContext(ArchivedClientsContext); 
     const { setMessages } = useContext(MessagesContext);
+    const { setUnReadClients, unReadClients } = useContext(UnReadClientsContext);
+    const { setUnReadClients2, unReadClients2 } = useContext(UnReadClientsContext2);
+    const { statusClients, setStatusClients } = useContext(FilterWithStatusContext);
 
-    const updateClients= async()=> {
-        setClients(clients.map(myClient => {
-          if (myClient.id === client.id) {
-            // Create a *new* object with changes
-              console.log('test client update: ', client);
-              return client;
-              
-          } else {
-            // No changes
-            return myClient;
+    const updateClients= async(newClient)=> {
+        const updateArray = (clientsArray, setClientsArray) => {
+            const updatedArray = clientsArray.map(cli =>
+              cli.id === newClient.id ? newClient : cli
+            );
+            setClientsArray(updatedArray);
+        };
+        console.log("check client before update: ", newClient)
+        updateArray(clients, setClients);
+        updateArray(unReadClients, setUnReadClients);
+        updateArray(unReadClients2, setUnReadClients2);
+        updateArray(statusClients, setStatusClients);        
+        
+    }
+
+    const updateStatus = async (status) => {
+        try {
+          const matchedStatus = statusOptions.filter((item) => item.name === status);
+      
+          // Check if matchedStatus is found
+          if (matchedStatus.length === 0) {
+            throw new Error(`Status "${status}" not found in statusOptions`);
           }
-        }));
-    }
-
-    const updateStatus = async(status) => {
-        const matchedStatus = statusOptions.filter((item)=> item.name === status)
-        const formData = new FormData();
-        formData.append('uuid', client.id);
-        formData.append('type', 'status');
-        formData.append('status_id', matchedStatus[0].id);
-        const endpoint = `${url_live}/api/whatsapp/ProcessClient`;
-    
-        const response = await axios.post(endpoint, formData, {
+      
+          const formData = new FormData();
+          formData.append('uuid', client.id);
+          formData.append('type', 'status');
+          formData.append('status_id', matchedStatus[0].id);
+      
+          const endpoint = `${url_live}/api/whatsapp/ProcessClient`;
+      
+          const response = await axios.post(endpoint, formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-        console.log('test response', response.status);
-        setClients(clients.map(myClient => {
-            if (myClient.id === client.id) {
-              // Create a *new* object with changes
-                return { ...client, status: status };
-                
-            } else {
-              // No changes
-              return myClient;
-            }
-        }));
-
-        return response.status;
-    }
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+      
+          console.log('test response', response.status);
+      
+      
+          return response.status;
+        } catch (error) {
+          console.error('Error updating status:', error);
+          return null;
+        }
+    };
+      
 
     const AddEmployee = async(employee) => {
         const matchedEmployee = employees.filter((item)=> item.name === employee)
@@ -72,16 +84,6 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
-        setClients(clients.map(myClient => {
-            if (myClient.id === client.id) {
-              // Create a *new* object with changes
-                return { ...client, employee: employee };
-                
-            } else {
-              // No changes
-              return myClient;
-            }
-        }));
 
         return response.status;
     }
@@ -118,16 +120,6 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
-        setClients(clients.map(myClient => {
-            if (myClient.id === client.id) {
-              // Create a *new* object with changes
-                return { ...client, classification: category };
-                
-            } else {
-              // No changes
-              return myClient;
-            }
-        }));
 
         return response.status;
     }
@@ -162,32 +154,11 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
-        setClients(clients.map(myClient => {
-            if (myClient.id === client.id) {
-              // Create a *new* object with changes
-                return { ...client, 'Follow history': followHistory };
-                
-            } else {
-              // No changes
-              return myClient;
-            }
-        }));
-
+        
         return response.status;
     }
     
     const updateClientName = async (name) => {
-        setClients(clients.map(myClient => {
-            if (myClient.id === client.id) {
-              // Create a *new* object with changes
-                return { ...client, name: name };
-                
-            } else {
-              // No changes
-              return myClient;
-            }
-        }));
-        setClient({...client, name: name})
         const formData = new FormData();
         formData.append('uuid', client.id);
         formData.append('type', 'name_client');
@@ -200,36 +171,53 @@ export const UpdateClientContextProvider = ({children}) => {
             }
         });
         console.log(response.data);
-        
         return response.status;
     }
     
     const getCurrentDate = () => {
-        return moment().format('DD/MM/YYYY');
+        return moment().format('DD-MM-YYYY');
     };
 
     const handleDeleteClient = async () => {
-        setClients(clients.filter((cl) => (cl.id !== client.id)));
-        setArchivedClients(prevClients => [...prevClients, client]);
-        setClient({});
-        setMessages([]);        
-        const date = getCurrentDate();
-        const formData = new FormData();
-        formData.append('uuid', client.id);
-        formData.append('type', 'deleted');
-        formData.append('deleted', date);
-        
-        const endpoint = `${url_live}/api/whatsapp/ProcessClient`;
-        const response = await axios.post(endpoint, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+        try {
+            const date = getCurrentDate();
+            console.log(date)
+            const formData = new FormData();
+            formData.append('uuid', client.id);
+            formData.append('type', 'deleted');
+            formData.append('deleted', date);
+    
+            const endpoint = `${url_live}/api/whatsapp/ProcessClient`;
+            const response = await axios.post(endpoint, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+    
+            if (response.status === 200) {
+                setClients(clients.filter((cl) => cl.id !== client.id));
+                setArchivedClients(prevClients => [...prevClients, client]);
+                setClient({});
+                setMessages([]);
+                alert('"Client" deleted successfully');
+            } else {
+                console.error('Unexpected response status:', response.status);
             }
-        });
-        console.log(response.data);        
-        
-        response === 200 && alert('"Client" deleted successfuly');
-
-    }
+            console.log(response.data);
+    
+        } catch (error) {
+            if (error.response) {
+                console.error('Error response data:', error.response.data);
+                console.error('Error response status:', error.response.status);
+                console.error('Error response headers:', error.response.headers);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+            } else {
+                console.error('Error message:', error.message);
+            }
+            console.error('Error config:', error.config);
+        }
+    };
     
     const handleUnDeleteClient = async (myClient) => {
         setArchivedClients(()=>archivedClients.filter((cl) => (cl.id !== myClient.id)));
@@ -252,6 +240,8 @@ export const UpdateClientContextProvider = ({children}) => {
         response === 200 && alert('"Client" undeleted successfuly');
 
     }
+
+
 
     const contextValue = {
         updateStatus,

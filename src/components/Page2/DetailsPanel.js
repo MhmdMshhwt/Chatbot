@@ -22,6 +22,7 @@ import { url_live } from '../../constants';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import UpdateClientContext from '../../context/updateClient-context';
+import LoadingButton from '../common/load/button/loading';
 
 
 const options = [
@@ -33,7 +34,7 @@ const options = [
 const ITEM_HEIGHT = 48;
 
 const UserSettings = () => {
-    const { isDetailsPanelOpen, setIsDetailsPanelOpen, client, displayedClassificationOptions, employees, displayedStatusOptions, displayedBootOptions, displayedEmployees } = useContext(ChatAreaContext); 
+    const { isDetailsPanelOpen, setIsDetailsPanelOpen, client, displayedClassificationOptions, employees, displayedStatusOptions, displayedBootOptions, displayedEmployees, setClient } = useContext(ChatAreaContext); 
     const [status, setStatus] = useState('');
     const [note, setNote] = useState('');
     const [category, setCategory] = useState('');
@@ -47,8 +48,9 @@ const UserSettings = () => {
     const open = Boolean(anchorEl);
     const [response, setResponse] = useState(null)
     const [loading, setLoading] = useState(false);
+    const [nameloading, setNameLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [isDisabled, setIsDisabled] = useState(true);
+    const [isDisabled, setIsDisabled] = useState(false);
     const [isNameDisabled, setIsNameDisabled] = useState(true);
     const {
         AddEmployee,
@@ -69,41 +71,56 @@ const UserSettings = () => {
         setUserName(client.name);
         setEmployee(client.employee);
         setIsDisabled(true);
-    }, [client]);
+    }, [client.id]);
     
     const updateName = async () => {
+        setNameLoading(true);
         if (userName !== client.name) {
             const res = await updateClientName(userName);
-            res === 200 && alert('"Name" updated successfuly');
+            if (res === 200) {
+                updateClients({ ...client, name_client: userName });
+                alert('"Name" updated successfuly');
+            }
         }
         setIsNameDisabled(true);
+        setNameLoading(false);
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
         setError(null);
-
         // first update status
         if (status !== client.status) {
             const res = await updateStatus(status);
-            res === 200 && alert('"Status" updated successfuly');
+            if( res === 200 ){
+                updateClients({ ...client, status });
+                alert('"Status" updated successfuly');
+            };
         }
-        
         // add new note
         if (note !== '') {
             const res = await AddComment(note);
-            res === 200 && alert('"Note" added successfuly');
+            if (res === 200) {
+                alert('"Note" added successfuly');
+            }
+        
         }
         // update classification
         if (category !== client.classification) {
             const res = await updateClassification(category);
-            res === 200 && alert('"Classification" updated successfuly');
+            if (res === 200) {
+                updateClients({ ...client, classification: category });
+                alert('"Classification" updated successfuly');
+            }
         }
         
         if (followUpDateTime !== client['Follow history']) {
             const res = await updateFollowHistory(followUpDateTime);
-            res === 200 && alert('"Follow Up Date" updated successfuly');
+            if (res === 200) {
+                updateClients({ ...client, 'Follow history': followUpDateTime });
+                alert('"Follow Up Date" updated successfuly');
+            }
         }
         
         if (botOption !== '') {
@@ -113,10 +130,12 @@ const UserSettings = () => {
 
         if (employee !== client.employee) {
             const res = await AddEmployee(employee);
-            res === 200 && alert('"Employee" forward successfuly');
+            if (res === 200) {
+                updateClients({ ...client, employee });
+                alert('"Employee" forward successfuly');
+            }
         }
 
-        updateClients()
         setIsDisabled(true);
         setLoading(false);
     };
@@ -143,9 +162,9 @@ const UserSettings = () => {
     const handleNameChange = (event) => {
         setUserName(event.target.value);
         if (client.name !== event.target.value)
-            setIsDisabled(false);
+            setIsNameDisabled(false);
         else
-            setIsDisabled(true);
+            setIsNameDisabled(true);
     };
     
     const handlePhoneChange = (event) => {
@@ -195,6 +214,10 @@ const UserSettings = () => {
             setIsDisabled(true);
     };
 
+    const deleteClient = () => {
+        handleDeleteClient();
+    }
+
     return (
         <Box sx={{ maxWidth: 300, overflowY: 'auto', borderLeft: `1px solid ${theme.palette.lightgrey.lightgrey700}` }} className="max-h-screen">
             <Box sx={{ padding: '16px', color: theme.palette.primary.main , display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
@@ -224,7 +247,7 @@ const UserSettings = () => {
                     },
                     }}
                 >
-                    <MenuItem onClick={()=> {handleDeleteClient(); handleClose()}}>
+                    <MenuItem onClick={deleteClient}>
                         Delete
                     </MenuItem>
                 </Menu>
@@ -339,10 +362,16 @@ const UserSettings = () => {
                         ))}
                     </Select>
                 </FormControl>
-
-                <Button variant="contained" fullWidth sx={{ mb: 3, fontSize: '16px' }} startIcon={<Save />} onClick={handleSubmit} disabled={isDisabled}>
-                    Save changes
-                </Button>
+                {loading ? (
+                    <Button variant="contained" fullWidth sx={{ mb: 3, fontSize: '16px', py: 2 }}>
+                        <LoadingButton />
+                    </Button>
+                ) : (
+                    <Button variant="contained" fullWidth sx={{ mb: 3, fontSize: '16px' }} startIcon={<Save />} onClick={handleSubmit} disabled={isDisabled}>
+                        Save changes
+                    </Button>        
+                )}
+                
             </Box>
             {/* <Divider sx={{ mb: 0 }}/> */}
                     
@@ -362,14 +391,23 @@ const UserSettings = () => {
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <Button
-                                        onClick={updateName}
-                                        disabled={isNameDisabled}
-                                        sx={{
-                                            fontSize: '16px',
-                                            textTransform: 'capitalize'
-                                        }}
-                                    >Save</Button>
+                                    {nameloading ? (
+                                        <Button
+                                            sx={{
+                                                fontSize: '16px',
+                                                textTransform: 'capitalize'
+                                            }}
+                                        ><LoadingButton /></Button>
+                                    ): (
+                                        <Button
+                                            onClick={updateName}
+                                            disabled={isNameDisabled}
+                                            sx={{
+                                                fontSize: '16px',
+                                                textTransform: 'capitalize'
+                                            }}
+                                        >Save</Button>        
+                                    )}
                                 </InputAdornment>
                             ),
                         }}

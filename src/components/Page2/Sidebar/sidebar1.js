@@ -4,7 +4,6 @@ import SidebarHeader from './header';
 import { useTheme } from '../../../context/theme-context';
 import ChatAreaContext from '../../../context/chatArea-context';
 import UpdateClientContext from '../../../context/updateClient-context';
-import Loading from '../../loading';
 import { FilterWithStatusContext } from '../../../context/filterWithStatus-context copy';
 import AllClients from './allClients';
 import UnreadClients from './unreadClients';

@@ -8,19 +8,20 @@ import InputLabel from '@mui/material/InputLabel';
 // import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ChatAreaContext from "../../../context/chatArea-context";
 import { UnReadClientsContext } from "../../../context/unReadClients-context";
-import Loading from '../../loading';
 import { UnReadClientsContext2 } from '../../../context/unReadClients-context2';
 import SimpleAlert from '../../common/Alerts/success';
+import LoadingButton from '../../common/load/button/loading';
 
 
 const ITEM_HEIGHT = 48;
 
 const ChatHeader = () => {
     const { theme } = useTheme();
-    const [markAs, setMarkAs] = useState('');
+    // const [markAs, setMarkAs] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const {
@@ -29,19 +30,20 @@ const ChatHeader = () => {
         handleClientChange,
         setClient,
         client,
+        handleClientClick,
         displayedStatusOptions
     } = useContext(ChatAreaContext);
     
     const {
         unIsLoading,
-        unReadClients,
-        unReadClientsEndRef,
+        unReadClients2,
         notificationCount,
-    } = useContext(UnReadClientsContext);
+        unReadClientsEndRef2
+    } = useContext(UnReadClientsContext2);
 
     const getLastItemAfterComma = (text) => {
         const items = text.split(',');
-        return items[items.length - 1].trim();
+        return items[0].trim();
     };
 
     const truncateText = (text, maxLength) => {
@@ -50,16 +52,16 @@ const ChatHeader = () => {
         }
         return text;
     }
-    const handleChange = (event) => {
-        setMarkAs(event.target.value);
-    };
+    // const handleChange = (event) => {
+    //     setMarkAs(event.target.value);
+    // };
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+    const handleClick = () => {
+        setIsOpen(!isOpen);
     };
 
     const handleClose = () => {
-        setAnchorEl(null);
+        setIsOpen(false);
         // setNotificationCount(notificationCount-1)
     };
 
@@ -81,7 +83,7 @@ const ChatHeader = () => {
                 noValidate
                 autoComplete="off"
             >
-                <input type="text" id="simple-search" style={{outline: 'none'}} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search branch name..." required />
+                {/* <input type="text" id="simple-search" style={{outline: 'none'}} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-64 ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search branch name..." required /> */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -90,60 +92,69 @@ const ChatHeader = () => {
                         gap: '.5rem'
                     }}
                 >
-                    <Button className={styles.searchButton} variant="contained"
+                    {/* <Button className={styles.searchButton} variant="contained"
                         sx={{
                             color: theme.palette.darkgrey.darkgrey600
                         }}
                     >
                         <Search fontSize="14px"/>
-                    </Button>
-                    <Badge badgeContent={notificationCount} color="secondary">
-                        <Button
-                            className={styles.searchButton}
-                            variant="contained"
-                            sx={{
-                                color: theme.palette.darkgrey.darkgrey600,
-                            }}
-                            aria-label="more"
-                            id="long-button"
-                            aria-controls={open ? 'long-menu' : undefined}
-                            aria-expanded={open ? 'true' : undefined}
-                            aria-haspopup="true"
-                            onClick={handleClick}
-                        >
-                            <Notifications fontSize="10px" />
-                        </Button>
-                    </Badge>
-
-                    <Menu
-                        id="long-menu"
-                        MenuListProps={{
-                        'aria-labelledby': 'long-button',
-                        }}
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        PaperProps={{
-                        style: {
-                            maxHeight: ITEM_HEIGHT * 4.5,
-                            width: '30ch',
-                        },
+                    </Button> */}
+                    <Box
+                        sx={{
+                            position: 'relative'
                         }}
                     >
-                        {unReadClients?.map((client, index) => (
-                            ( index < notificationCount &&
-                                <MenuItem key={client.id} onClick={() => { setClient(client); handleClose() }} class="flex items-center gap-4 p-4 py-3 hover:bg-gray-100" style={{ cursor: 'pointer' }}>    
-                                    {/* <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt=""> */}
-                                    <Avatar>{client.name[0]}</Avatar>
-                                    <div class="font-medium dark:text-white">
-                                        <div>{client.name}</div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400">{truncateText(getLastItemAfterComma(client.messages_noRead), 30)}</div>
-                                    </div>
-                                </MenuItem>    
-                            )
-                        ))}
-                    </Menu>
+                        <Badge badgeContent={notificationCount} color="secondary">
+                            <Button
+                                className={styles.searchButton}
+                                variant="contained"
+                                sx={{
+                                    color: theme.palette.darkgrey.darkgrey600,
+                                }}
+                                aria-label="more"
+                                id="long-button"
+                                aria-controls={open ? 'long-menu' : undefined}
+                                aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                onClick={handleClick}
+                            >
+                                <Notifications fontSize="10px" />
+                            </Button>
+                        </Badge>
+                        <Box
+                            sx={{
+                                bgcolor: '#FFF',
+                                boxShadow: `0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)`,
+                                borderRadius: '4px',
+                                maxHeight: isOpen? ITEM_HEIGHT * 4.5: 0,
+                                width: '30ch',
+                                marginTop: '2px',
+                                overflow: 'auto',
+                                zIndex: '1000'
+                            }}
+                            ref={unReadClientsEndRef2}
+                        >
+                            {unReadClients2?.map((client, index) => (
+                                ( index < notificationCount &&
+                                    <MenuItem key={client.id} onClick={() => { handleClientClick(client); handleClose() }} class="flex items-center gap-4 p-4 py-3 hover:bg-gray-100" style={{ cursor: 'pointer' }}>    
+                                        {/* <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt=""> */}
+                                        <Avatar>{client.name[0]}</Avatar>
+                                        <div class="font-medium dark:text-white">
+                                            <div>{client.name}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{truncateText(getLastItemAfterComma(client.messages_noRead), 22)}</div>
+                                        </div>
+                                    </MenuItem>    
+                                )
+                            ))}
+                            {unIsLoading &&
+                                <Box sx={{width: '100%', pb:2}}>
+                                    <LoadingButton />
+                                </Box>
+                            }
+                        </Box>
+                    </Box>
 
+      
                     {/* <Button className={styles.searchButton} variant="contained"
                         sx={{
                             color: theme.palette.darkgrey.darkgrey600
@@ -169,7 +180,7 @@ const ChatHeader = () => {
             </Box>
             <Box className={`${styles.buttom} py-2`}>
                 <Typography variant="body1" sx={{color: '#FFF', cursor: 'pointer'}}  >{client.name}</Typography>
-                <Box sx={{ minWidth: 120 }}>
+                {/* <Box sx={{ minWidth: 120 }}>
                     <FormControl sx={{ m: 1, minWidth: 120 }} size="small" style={{ borderColor: 'white', color: 'white' }}>
                         <InputLabel id="demo-select-small-label" style={{ color: 'white' }}>Mark as</InputLabel>
                         <Select
@@ -191,9 +202,9 @@ const ChatHeader = () => {
                             <MenuItem value={10}>Ten</MenuItem>
                             <MenuItem value={20}>Twenty</MenuItem>
                             <MenuItem value={30}>Thirty</MenuItem> */}
-                        </Select>
+                        {/* </Select>
                     </FormControl>
-                </Box>
+                </Box> */} 
             </Box>
         </Box>
     )

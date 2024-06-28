@@ -71,7 +71,7 @@ const SidebarHeader = () => {
                     </button>
                 </div>
             </form>
-            <form style={{ display: value === 3 ? 'block' : 'none' }} className="w-full mx-auto">   
+            {/* <form style={{ display: value === 3 ? 'block' : 'none' }} className="w-full mx-auto">   
                 <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                 <div className="relative">
                     <input type="search" onChange={handleInputChange} value={searchValue} id="default-search" className="block w-full p-4 text-sm text-gray-900 border focus:outline-none border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Name, Phone" required/>
@@ -81,7 +81,7 @@ const SidebarHeader = () => {
                         </svg>
                     </button>
                 </div>
-            </form>
+            </form> */}
             <Box sx={{ width: '100%' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example"
                     sx={{

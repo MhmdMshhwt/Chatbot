@@ -1,5 +1,5 @@
 // src/App.js
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box } from '@mui/material';
 import ChatArea from '../../components/Page2/ChatArea';
 import { useTheme } from '../../context/theme-context';
@@ -9,9 +9,11 @@ import Sidebar2 from '../../components/Page2/Sidebar/sidebar2';
 import Sidebar3 from '../../components/Page2/Sidebar/sidebar3';
 import Sidebar4 from '../../components/Page2/Sidebar/sidebar4';
 import SimpleAlert from '../../components/common/Alerts/success';
+import ChatAreaContext from '../../context/chatArea-context';
 
 const Page2 = () =>{
   const { theme } = useTheme();
+  const { client } = useContext(ChatAreaContext);
 
   return (
     <Box sx={{ display: 'flex', flexGrow: 1 }}>
@@ -40,7 +42,7 @@ const Page2 = () =>{
         </Box>
       </Box>
       <ChatArea />
-      <UserSettings />
+      {Object.keys(client).length !== 0  && <UserSettings /> }
     </Box>
   );
 }

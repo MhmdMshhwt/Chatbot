@@ -29,9 +29,9 @@ function App() {
               <ArchivedClientsContextProvider>
                 <ChatAreaContextProvider>
                   <MessagesContextProvider>
+                    <FilterWithStatusContextProvider>
                     <UpdateClientContextProvider>
                       <ClientsFilterContextProvider>
-                        <FilterWithStatusContextProvider>
                           <CssBaseline />
                           <Router>
                             <Routes>
@@ -40,10 +40,10 @@ function App() {
                               <Route path="/frontWhatsapp/" element={<Page2 />} />
                             </Routes>
                           </Router>
-                        </FilterWithStatusContextProvider>
                       </ClientsFilterContextProvider>
                       </UpdateClientContextProvider>
-                    </MessagesContextProvider>
+                    </FilterWithStatusContextProvider>
+                  </MessagesContextProvider>
                 </ChatAreaContextProvider>
               </ArchivedClientsContextProvider>
             </UnReadClientsContextProvider2>

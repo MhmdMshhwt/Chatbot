@@ -83,6 +83,7 @@ const FilterWithStatusContextProvider = ({ children }) => {
         setStatusValue,
         statusClients,
         clientStatusEndRef,
+        setStatusClients,
         statusIsLoading,
         setStatusIsLoading,
     };

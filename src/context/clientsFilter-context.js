@@ -17,6 +17,9 @@ const ClientsFilterContextProvider = ({ children }) => {
                 setIsLoading(true);
                 const response = await axios.get(
                     `${url_live}/api/whatsapp/filterClient?type=search&search=${value}&page=${page}`
+                    // `${url_live}/api/whatsapp/filterClient?type=status&status=${value}&page=${page}`
+                    // `${url_live}/api/whatsapp/filterClient?type=unread&unread=${value}&page=${page}`
+                    // ||`${url_live}/api/whatsapp/filterClient?type=deleted&deletd=${value}&page=${page}`
                 );
                 setIsLoading(false);
                 return response.data.data;

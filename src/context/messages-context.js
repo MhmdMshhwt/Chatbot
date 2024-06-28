@@ -16,13 +16,16 @@ const MessagesContextProvider = ({ children }) => {
     const [textAreaValue, setTextAreaValue] = useState('');
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
+    // WebSocket reference
+    const ws = useRef(null);
+
     const fetchMessages = async (page, clientId) => {
         try {
             setIsLoading(true);
             const response = await axios.get(
                 `${url_live}/api/whatsapp/chat/${clientId}?page=${page}`
             );
-            
+            console.error('test returned messages', response.data.data);
             return response.data.data.sort((a, b) => new Date(a.create_dates.created_at) - new Date(b.create_dates.created_at));
         } catch (error) {
             console.error('Error fetching messages', error);
@@ -46,7 +49,12 @@ const MessagesContextProvider = ({ children }) => {
             const newMessage = {
                 id: Date.now(),
                 type: "sender_messages",
-                messages: messageData.text || messageData.file?.name || "Audio message",
+                messages: messageData.text || messageData.document || messageData.image || messageData.audio ,
+                image: messageData.type === 'image'? true: false,
+                document: messageData.type === 'document'? true: false,
+                audio: messageData.type === 'audio'? true: false,
+                url: messageData.type === 'image' ? messageData.image : messageData.document, 
+                audioUrl: messageData.audio,
                 type_messages: "personal",
                 status: "read",
                 client_id: client.id,
@@ -65,11 +73,13 @@ const MessagesContextProvider = ({ children }) => {
             formData.append('type', messageData.type);
             if (messageData.type === 'text') {
                 formData.append('text', messageData.text);
-            } else if (messageData.type === 'file') {
-                formData.append('file', messageData.file);
+            } else if (messageData.type === 'document') {
+                formData.append('document', messageData.document);
+            } else if (messageData.type === 'image') {
+                formData.append('image', messageData.image);
             } else if (messageData.type === 'audio') {
-                const audioBlob = new Blob([messageData.audio], { type: 'audio/wav' });
-                formData.append('file', audioBlob, 'audio.wav');
+                const audioBlob = new Blob([], { type: 'audio/mp3' });
+                formData.append('audio', audioBlob);
             }
 
             const endpoint = `${url_live}/api/whatsapp/sendMessages`;
@@ -79,6 +89,12 @@ const MessagesContextProvider = ({ children }) => {
                 }
             });
             const postedMessage = response.data.data;
+
+            // Send the message to the WebSocket server
+            if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+                ws.current.send(JSON.stringify(newMessage));
+            }
+
             console.log('Posted message: ', postedMessage);
         } catch (error) {
             console.error('Error posting message', error);
@@ -88,7 +104,6 @@ const MessagesContextProvider = ({ children }) => {
     const loadMoreResults = async (client) => {
         if (!hasMore) return;
 
-        // if (Object.keys(client).length === 0) return;
         const newMessages = await fetchMessages(current_page, client.id);
         setIsLoading(false);
         newMessages.length === 0 && console.log("have no messages yet")
@@ -130,13 +145,33 @@ const MessagesContextProvider = ({ children }) => {
         };
     }, [handleScroll]);
 
+    useEffect(() => {
+        // Initialize WebSocket connection
+        ws.current = new WebSocket('ws://localhost:4000');
+        ws.current.onopen = () => console.log('WebSocket connection opened');
+        ws.current.onclose = () => console.log('WebSocket connection closed');
+
+        // Handle incoming WebSocket messages
+        ws.current.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            setMessages(prevMessages => [...prevMessages, message]);
+        };
+
+        // Cleanup WebSocket connection on component unmount
+        return () => {
+            if (ws.current) {
+                ws.current.close();
+            }
+        };
+    }, []);
+
     const contextValue = {
         messages,
         isLoading,
         messagesEndRef,
         sendMessage,
         setMessages,
-        textAreaValue, 
+        textAreaValue,
         setTextAreaValue,
         showEmojiPicker,
         setShowEmojiPicker
