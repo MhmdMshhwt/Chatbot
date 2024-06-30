@@ -51,6 +51,7 @@ const UserSettings = () => {
     const [nameloading, setNameLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isDisabled, setIsDisabled] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [isNameDisabled, setIsNameDisabled] = useState(true);
     const {
         AddEmployee,
@@ -220,8 +221,10 @@ const UserSettings = () => {
             setIsDisabled(true);
     };
 
-    const deleteClient = () => {
-        handleDeleteClient();
+    const deleteClient = async () => {
+        setIsDeleting(true);
+        await handleDeleteClient();
+        setIsDeleting(false)
     }
 
     return (
@@ -253,9 +256,13 @@ const UserSettings = () => {
                     },
                     }}
                 >
-                    <MenuItem onClick={deleteClient}>
-                        Delete
-                    </MenuItem>
+                    {isDeleting ? (
+                        <LoadingButton />
+                    ): (
+                        <MenuItem onClick={deleteClient}>
+                            Delete
+                        </MenuItem>        
+                    )}
                 </Menu>
             </Box>
             <Divider sx={{ mb: 0 }} />

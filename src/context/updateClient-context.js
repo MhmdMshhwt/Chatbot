@@ -220,10 +220,10 @@ export const UpdateClientContextProvider = ({children}) => {
     };
     
     const handleUnDeleteClient = async (myClient) => {
-        setArchivedClients(()=>archivedClients.filter((cl) => (cl.id !== myClient.id)));
         // setClient({});
         // fetchClientChat(client.id);
-        setClients(prevClients => [...prevClients, myClient]);
+        console.log(myClient, 'test client befor delete');
+        setClients(prevClients => [myClient, ...prevClients]);
         const date = getCurrentDate();
         const formData = new FormData();
         formData.append('uuid', myClient.id);
@@ -237,7 +237,10 @@ export const UpdateClientContextProvider = ({children}) => {
         });
         console.log(response.data);        
 
-        response === 200 && alert('"Client" undeleted successfuly');
+        if (response === 200) {
+            setArchivedClients((prevClients) => prevClients.filter((cl) => cl.id !== myClient.id));
+            alert('"Client" undeleted successfuly');
+        }
 
     }
 
