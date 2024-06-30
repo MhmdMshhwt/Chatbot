@@ -68,7 +68,7 @@ const UserSettings = () => {
         setStatus(client.status);
         setCategory(client.classification)
         setFollowUpDateTime(client['Follow history'])
-        setUserName(client.name);
+        setUserName(client.name_client);
         setEmployee(client.employee);
         setIsDisabled(true);
     }, [client.id]);
@@ -79,6 +79,7 @@ const UserSettings = () => {
             const res = await updateClientName(userName);
             if (res === 200) {
                 updateClients({ ...client, name_client: userName });
+                setClient((prev) => ({ ...prev, name_client: userName }));
                 alert('"Name" updated successfuly');
             }
         }
@@ -95,6 +96,7 @@ const UserSettings = () => {
             const res = await updateStatus(status);
             if( res === 200 ){
                 updateClients({ ...client, status });
+                setClient((prev) => ({ ...prev, status }));
                 alert('"Status" updated successfuly');
             };
         }
@@ -102,6 +104,7 @@ const UserSettings = () => {
         if (note !== '') {
             const res = await AddComment(note);
             if (res === 200) {
+                setNote('');
                 alert('"Note" added successfuly');
             }
         
@@ -111,6 +114,7 @@ const UserSettings = () => {
             const res = await updateClassification(category);
             if (res === 200) {
                 updateClients({ ...client, classification: category });
+                setClient((prev) => ({ ...prev, classification: category }));
                 alert('"Classification" updated successfuly');
             }
         }
@@ -119,6 +123,7 @@ const UserSettings = () => {
             const res = await updateFollowHistory(followUpDateTime);
             if (res === 200) {
                 updateClients({ ...client, 'Follow history': followUpDateTime });
+                setClient((prev) => ({ ...prev, 'Follow history': followUpDateTime }));
                 alert('"Follow Up Date" updated successfuly');
             }
         }
@@ -132,6 +137,7 @@ const UserSettings = () => {
             const res = await AddEmployee(employee);
             if (res === 200) {
                 updateClients({ ...client, employee });
+                setClient((prev) => ({ ...prev, employee }));
                 alert('"Employee" forward successfuly');
             }
         }

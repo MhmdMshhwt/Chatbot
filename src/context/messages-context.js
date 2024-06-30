@@ -78,8 +78,8 @@ const MessagesContextProvider = ({ children }) => {
             } else if (messageData.type === 'image') {
                 formData.append('image', messageData.image);
             } else if (messageData.type === 'audio') {
-                const audioBlob = new Blob([], { type: 'audio/mp3' });
-                formData.append('audio', audioBlob);
+                const blob = new Blob([messageData.audio], { type: 'audio/mp3' });
+                formData.append('audio', blob, 'audio.mp3');
             }
 
             const endpoint = `${url_live}/api/whatsapp/sendMessages`;
@@ -123,7 +123,7 @@ const MessagesContextProvider = ({ children }) => {
         if (client && client.id) {
             loadMoreResults(client);
         }
-    }, [client]);
+    }, [client.id]);
 
     const handleScroll = useCallback(() => {
         if (hasMore) {

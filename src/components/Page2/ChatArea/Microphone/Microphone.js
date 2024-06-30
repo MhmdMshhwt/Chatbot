@@ -127,8 +127,8 @@ export default function Microphone({ pushFile }) {
               record={record}
               style={{width: "100%", height: 200}}
               onStop={onStop}
-            onData={onData}
-            mimeType= "audio/mp3"
+              onData={onData}
+              mimeType= "audio/mp3"
               strokeColor="grey"
               backgroundColor="white"
             />
